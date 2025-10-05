@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNU Collection - Admin Panel</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body {
+  background-color: black;
+  background-image: url('https://images.pexels.com/photos/1662298/pexels-photo-1662298.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+.overlay {
+  background: rgba(0,0,0,0.75);
+  min-height: 100vh;
+}
+header {
+  text-align: center;
+  padding: 20px;
+  background: rgba(0,0,0,0.8);
+}
+nav {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
+}
+nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+.admin-section {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+}
+.admin-section h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+.admin-section form input, .admin-section form textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+}
+.admin-section form button {
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+.admin-section form button:hover {
+  background-color: #218838;
+}
+.preview-item, .order-item {
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+.preview-item img, .order-item img {
+  max-width: 100px;
+  border-radius: 6px;
+}
+.order-actions button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.order-actions .delivered {
+  background-color: #28a745;
+  color: white;
+}
+.order-actions .delete {
+  background-color: #dc3545;
+  color: white;
+}
+</style>
+</head>
+<body>
+<div class="overlay">
+<header>
+  <h1>Admin Panel - MNU Collection</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="cart.html">Cart</a>
+  </nav>
+</header>
+
+<section class="admin-section">
+  <h2>Add New Product</h2>
+  <form id="adminForm">
+    <input type="text" id="name" placeholder="Product Name" required>
+    <input type="number" id="price" placeholder="Price" required>
+    <textarea id="description" placeholder="Description" required></textarea>
+    <input type="file" id="image" accept="image/*" required>
+    <button type="submit">Add Product</button>
+  </form>
+
+  <h2>Product Preview</h2>
+  <div id="preview"></div>
+
+  <h2>Orders</h2>
+  <div id="orders"></div>
+</section>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCQwYdtbUSM7WM25eNUzN4NxFXEvvRGN1k",
+  authDomain: "mnu-collection-9282f.firebaseapp.com",
+  databaseURL: "https://mnu-collection-9282f-default-rtdb.firebaseio.com",
+  projectId: "mnu-collection-9282f",
+  storageBucket: "mnu-collection-9282f.firebasestorage.app",
+  messagingSenderId: "88757917123",
+  appId: "1:88757917123:web:3b1f8f53654fee25089976",
+  measurementId: "G-JW6LQER5TD"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// ---------- PRODUCT MANAGEMENT ----------
+const adminForm = document.getElementById('adminForm');
+const preview = document.getElementById('preview');
+
+function displayProducts() {
+  preview.innerHTML = '';
+  const productsRef = ref(db, 'products/');
+  onValue(productsRef, (snapshot) => {
+    preview.innerHTML = '';
+    snapshot.forEach((childSnapshot) => {
+      const product = childSnapshot.val();
+      const key = childSnapshot.key;
+      const div = document.createElement('div');
+      div.className = 'preview-item';
+      div.innerHTML = `
+        <button onclick="removeProduct('${key}')">Remove</button>
+        <img src="${product.image}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>₹${product.price}</p>
+        <p>${product.description}</p>
+        <p class="timestamp">Added: ${product.time}</p>
+      `;
+      preview.appendChild(div);
+    });
+  });
+}
+
+window.removeProduct = (key) => {
+  if(confirm("Are you sure you want to remove this T-shirt?")) {
+    remove(ref(db, 'products/' + key));
+  }
+};
+
+adminForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
+  const price = parseFloat(document.getElementById('price').value);
+  const description = document.getElementById('description').value;
+  const imageInput = document.getElementById('image');
+
+  const reader = new FileReader();
+  reader.onload = function() {
+    const product = {
+      name,
+      price,
+      description,
+      image: reader.result,
+      time: new Date().toLocaleString()
+    };
+    push(ref(db, 'products/'), product);
+    adminForm.reset();
+  };
+  reader.readAsDataURL(imageInput.files[0]);
+});
+
+displayProducts();
+
+// ---------- ORDER MANAGEMENT ----------
+const ordersDiv = document.getElementById('orders');
+
+function displayOrders() {
+  const ordersRef = ref(db, 'orders/');
+  onValue(ordersRef, (snapshot) => {
+    ordersDiv.innerHTML = '';
+    if(!snapshot.exists()) {
+      ordersDiv.innerHTML = "<p>No orders yet.</p>";
+      return;
+    }
+    snapshot.forEach((childSnapshot, index) => {
+      const order = childSnapshot.val();
+      const key = childSnapshot.key;
+      const div = document.createElement('div');
+      div.className = 'order-item';
+
+      let paymentStatus = order.payment === "Cash on Delivery" ? "Payment Not Done" : "✅ Paid";
+
+      let productsList = '';
+      order.items.forEach(item => {
+        productsList += <p>${item.name} x ${item.quantity || 1} (₹${item.price})</p>;
+      });
+
+      div.innerHTML = `
+        <h3>Order #${index + 1}</h3>
+        <p><strong>Name:</strong> ${order.customerName}</p>
+        <p><strong>Phone:</strong> ${order.phone}</p>
+        <p><strong>Email:</strong> ${order.email}</p>
+        <p><strong>Address:</strong> ${order.address}, ${order.city}, ${order.state} - ${order.pincode}</p>
+        <p><strong>Payment:</strong> ${order.payment} (${paymentStatus})</p>
+        <p><strong>Total:</strong> ₹${order.total}</p>
+        <p><strong>Date:</strong> ${order.time}</p>
+        <h4>Items:</h4>
+        ${productsList}
+        <div class="order-actions">
+          <button onclick="markDelivered('${key}')" class="delivered">Mark Delivered</button>
+          <button onclick="deleteOrder('${key}')" class="delete">Delete Order</button>
+        </div>
+      `;
+      ordersDiv.appendChild(div);
+    });
+  });
+}
+
+window.markDelivered = (key) => {
+  const orderRef = ref(db, 'orders/' + key);
+  update(orderRef, { payment: "Cash on Delivery - Delivered ✅" });
+};
+
+window.deleteOrder = (key) => {
+  if(confirm("Are you sure you want to delete this order?")){
+    remove(ref(db, 'orders/' + key));
+  }
+};
+
+displayOrders();
+</script>
+</body>
+</html>
