@@ -37,44 +37,30 @@ nav a {
   font-weight: bold;
 }
 .checkout-container {
-  max-width: 900px;
+  max-width: 600px;
   margin: 20px auto;
   padding: 20px;
   background: rgba(255,255,255,0.1);
   border-radius: 10px;
 }
-.checkout-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 15px;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 10px;
-}
-.checkout-item img {
-  width: 70px;
-  height: 70px;
-  object-fit: cover;
-  border-radius: 6px;
-  margin-right: 15px;
-}
-input, select {
-  padding: 8px;
-  margin: 5px 0;
+.checkout-container input, .checkout-container select {
   width: 100%;
-  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 5px;
   border: none;
 }
-.btn-action {
+.checkout-container button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
   background-color: #ff4500;
   color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
+  font-size: 1.1em;
   cursor: pointer;
-  margin-top: 10px;
 }
-.btn-action:hover {
+.checkout-container button:hover {
   background-color: #e03e00;
 }
 </style>
@@ -91,33 +77,26 @@ input, select {
 </header>
 
 <section class="checkout-container">
-  <h2>Order Summary</h2>
-  <div id="checkoutItems"></div>
-  <h3 id="totalPrice"></h3>
-
-  <h2>Shipping Details</h2>
+  <h2>Enter Your Details</h2>
   <form id="checkoutForm">
-    <input type="text" id="fullName" placeholder="Full Name" required>
-    <input type="text" id="address" placeholder="Address/House" required>
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="text" id="house" placeholder="House/Street" required>
     <input type="text" id="city" placeholder="City" required>
-    <input type="text" id="state" placeholder="State" required>
-    <input type="text" id="pincode" placeholder="Pincode" required>
-    <input type="tel" id="phone" placeholder="Phone Number" required>
+    <input type="text" id="pincode" placeholder="Pin Code" required>
     <select id="paymentMethod" required>
       <option value="">Select Payment Method</option>
-      <option value="COD">Cash on Delivery</option>
-      <option value="Online">Online Payment</option>
+      <option value="cod">Cash on Delivery</option>
+      <option value="online">Online Payment</option>
     </select>
-    <button type="submit" class="btn-action">Place Order</button>
+    <button type="submit">Place Order</button>
   </form>
 </section>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
-// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCQwYdtbUSM7WM25eNUzN4NxFXEvvRGN1k",
   authDomain: "mnu-collection-9282f.firebaseapp.com",
@@ -129,82 +108,49 @@ const firebaseConfig = {
   measurementId: "G-JW6LQER5TD"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Temporary user ID
-let tempUserId = localStorage.getItem('tempUserId');
-if(!tempUserId){
-  tempUserId = 'user_' + Date.now();
-  localStorage.setItem('tempUserId', tempUserId);
+let userId = localStorage.getItem('tempUserId');
+if(!userId){
+  userId = 'user_' + Date.now();
+  localStorage.setItem('tempUserId', userId);
 }
 
-// Elements
-const checkoutItemsDiv = document.getElementById('checkoutItems');
-const totalPriceEl = document.getElementById('totalPrice');
-const checkoutForm = document.getElementById('checkoutForm');
-
-function displayCheckout(products){
-  checkoutItemsDiv.innerHTML = '';
-  let total = 0;
-  Object.keys(products).forEach((key) => {
-    const product = products[key];
-    total += product.price * (product.quantity || 1);
-    const div = document.createElement('div');
-    div.className = 'checkout-item';
-    div.innerHTML = `
-      <img src="${product.image}" alt="${product.name}">
-      <div>
-        <h4>${product.name}</h4>
-        <p>₹${product.price} x ${product.quantity || 1}</p>
-      </div>
-    `;
-    checkoutItemsDiv.appendChild(div);
-  });
-  totalPriceEl.textContent = Total: ₹${total};
+async function getCart() {
+  const snapshot = await get(child(ref(db), 'carts/' + userId));
+  return snapshot.exists() ? snapshot.val() : [];
 }
 
-// Listen to Firebase cart
-const cartRef = ref(db, 'carts/' + tempUserId);
-let currentCart = {};
-onValue(cartRef, (snapshot) => {
-  const data = snapshot.val() || {};
-  currentCart = data;
-  displayCheckout(data);
-});
-
-// Place order
-checkoutForm.addEventListener('submit', (e)=>{
+document.getElementById('checkoutForm').addEventListener('submit', async (e) => {
   e.preventDefault();
-  if(Object.keys(currentCart).length === 0){
-    alert('Cart is empty!');
-    return;
-  }
+  const name = document.getElementById('name').value;
+  const house = document.getElementById('house').value;
+  const city = document.getElementById('city').value;
+  const pincode = document.getElementById('pincode').value;
+  const paymentMethod = document.getElementById('paymentMethod').value;
 
-  const orderData = {
-    userId: tempUserId,
-    fullName: checkoutForm.fullName.value,
-    address: checkoutForm.address.value,
-    city: checkoutForm.city.value,
-    state: checkoutForm.state.value,
-    pincode: checkoutForm.pincode.value,
-    phone: checkoutForm.phone.value,
-    paymentMethod: checkoutForm.paymentMethod.value,
-    products: currentCart,
-    totalAmount: Object.values(currentCart).reduce((sum,p)=>sum + p.price*(p.quantity||1),0),
+  if(!paymentMethod){ alert('Select a payment method'); return; }
+
+  const cart = await getCart();
+  if(cart.length === 0){ alert('Your cart is empty'); return; }
+
+  const orderId = 'order_' + Date.now();
+
+  await set(ref(db, 'orders/' + orderId), {
+    userId,
+    customer: {name, house, city, pincode},
+    cart,
+    paymentMethod,
+    status: paymentMethod === 'cod' ? 'Pending' : 'Not Paid',
     timestamp: Date.now()
-  };
+  });
 
-  const ordersRef = ref(db, 'orders');
-  push(ordersRef, orderData)
-    .then(()=>{
-      alert('Order placed successfully!');
-      // Clear cart
-      remove(ref(db, 'carts/' + tempUserId));
-      window.location.href = 'index.html';
-    })
-    .catch(err=>alert('Error placing order: '+err));
+  // Clear cart after placing order
+  await set(ref(db, 'carts/' + userId), []);
+
+  alert('Order placed successfully!');
+  window.location.href = 'index.html';
 });
 </script>
 </body>
