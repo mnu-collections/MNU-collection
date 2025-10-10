@@ -80,6 +80,11 @@ nav a {
 .buy-now:hover {
   background-color: #e03e00;
 }
+.product-description {
+  font-size: 0.9em;
+  color: #ddd;
+  margin: 5px 0;
+}
 </style>
 </head>
 <body>
@@ -94,34 +99,12 @@ nav a {
   </nav>
 </header>
 
-<section class="products">
-  <div class="product-card" data-name="T-shirt 1" data-price="499" data-image="images/tshirt1.jpg">
-    <img src="images/tshirt1.jpg" alt="T-shirt 1">
-    <h3>T-shirt 1</h3>
-    <p>Price: ₹499</p>
-    <button class="add-to-cart">Add to Cart</button>
-    <button class="buy-now">Buy Now</button>
-  </div>
-  <div class="product-card" data-name="T-shirt 2" data-price="599" data-image="images/tshirt2.jpg">
-    <img src="images/tshirt2.jpg" alt="T-shirt 2">
-    <h3>T-shirt 2</h3>
-    <p>Price: ₹599</p>
-    <button class="add-to-cart">Add to Cart</button>
-    <button class="buy-now">Buy Now</button>
-  </div>
-  <div class="product-card" data-name="T-shirt 3" data-price="699" data-image="images/tshirt3.jpg">
-    <img src="images/tshirt3.jpg" alt="T-shirt 3">
-    <h3>T-shirt 3</h3>
-    <p>Price: ₹699</p>
-    <button class="add-to-cart">Add to Cart</button>
-    <button class="buy-now">Buy Now</button>
-  </div>
-</section>
+<section class="products" id="products"></section>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+import { getDatabase, ref, get, set, child, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -145,63 +128,101 @@ if(!userId){
   localStorage.setItem('tempUserId', userId);
 }
 
-// Load current cart from Firebase
+// Cart
 let cart = [];
+const cartCountEl = document.getElementById('cart-count');
+
+// Load current cart
 async function loadCart() {
   const snapshot = await get(child(ref(db), 'carts/' + userId));
-  if(snapshot.exists()){
+  if(snapshot.exists()) {
     cart = snapshot.val();
   } else {
     cart = [];
   }
   updateCartCount();
 }
-loadCart();
 
-// Update cart count in nav
 function updateCartCount() {
-  document.getElementById('cart-count').textContent = cart.length;
+  cartCountEl.textContent = cart.length;
 }
 
-// Add to cart
-document.querySelectorAll('.add-to-cart').forEach(button => {
-  button.addEventListener('click', async (e) => {
-    const card = e.target.closest('.product-card');
-    const product = {
-      name: card.dataset.name,
-      price: parseInt(card.dataset.price),
-      image: card.dataset.image,
-      quantity: 1
-    };
+// Load products dynamically
+const productsSection = document.getElementById('products');
+const productsRef = ref(db, 'products/');
 
-    const existingIndex = cart.findIndex(p => p.name === product.name);
-    if(existingIndex !== -1){
-      cart[existingIndex].quantity += 1;
-    } else {
-      cart.push(product);
-    }
+onValue(productsRef, (snapshot) => {
+  productsSection.innerHTML = '';
+  snapshot.forEach(childSnapshot => {
+    const product = childSnapshot.val();
+    const key = childSnapshot.key;
 
-    await set(ref(db, 'carts/' + userId), cart);
-    updateCartCount();
-    alert(product.name + " added to cart!");
+    const div = document.createElement('div');
+    div.className = 'product-card';
+    div.dataset.key = key;
+    div.dataset.name = product.name;
+    div.dataset.price = product.price;
+    div.dataset.image = product.image;
+
+    div.innerHTML = `
+      <img src="${product.image}" alt="${product.name}">
+      <h3>${product.name}</h3>
+      <p class="product-description">${product.description}</p>
+      <p>Price: ₹${product.price}</p>
+      <button class="add-to-cart">Add to Cart</button>
+      <button class="buy-now">Buy Now</button>
+    `;
+
+    productsSection.appendChild(div);
   });
+
+  attachButtons();
 });
 
-// Buy Now
-document.querySelectorAll('.buy-now').forEach(button => {
-  button.addEventListener('click', async (e) => {
-    const card = e.target.closest('.product-card');
-    const product = {
-      name: card.dataset.name,
-      price: parseInt(card.dataset.price),
-      image: card.dataset.image,
-      quantity: 1
-    };
-    cart = [product];
-    await set(ref(db, 'carts/' + userId), cart);
-    window.location.href = 'cart.html';
+// Attach button events
+function attachButtons() {
+  document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const card = e.target.closest('.product-card');
+      const product = {
+        name: card.dataset.name,
+        price: parseInt(card.dataset.price),
+        image: card.dataset.image,
+        quantity: 1
+      };
+
+      const existingIndex = cart.findIndex(p => p.name === product.name);
+      if(existingIndex !== -1) {
+        cart[existingIndex].quantity += 1;
+      } else {
+        cart.push(product);
+      }
+
+      await set(ref(db, 'carts/' + userId), cart);
+      updateCartCount();
+      alert(product.name + " added to cart!");
+    });
   });
-});
+
+  document.querySelectorAll('.buy-now').forEach(button => {
+    button.addEventListener('click', async (e) => {
+      const card = e.target.closest('.product-card');
+      const product = {
+        name: card.dataset.name,
+        price: parseInt(card.dataset.price),
+        image: card.dataset.image,
+        quantity: 1
+      };
+
+      cart = [product]; // replace cart with this item
+      await set(ref(db, 'carts/' + userId), cart);
+      window.location.href = 'cart.html';
+    });
+  });
+}
+
+// Initial cart load
+loadCart();
 </script>
 </body>
 </html>
