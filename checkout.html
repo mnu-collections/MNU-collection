@@ -1,3 +1,7 @@
+Perfect, Sir. Now I will update checkout.html so that it fetches all cart items from Firebase instead of localStorage. This ensures that all users (even temporary guest users) see their own cart items for checkout.
+
+Here’s the fully updated checkout.html:
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +17,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   color: white;
+  margin: 0;
   font-family: Arial, sans-serif;
 }
 .overlay {
@@ -36,35 +41,46 @@ nav a {
   font-weight: bold;
 }
 .checkout-container {
-  max-width: 700px;
+  max-width: 800px;
   margin: 20px auto;
   padding: 20px;
   background: rgba(255,255,255,0.1);
   border-radius: 10px;
 }
-.checkout-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
+.checkout-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
 }
-form input, form select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
+.checkout-item img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
   border-radius: 6px;
-  border: none;
+  margin-right: 15px;
 }
-form button {
-  background-color: #28a745;
+.checkout-item div {
+  flex: 1;
+}
+.btn-action {
+  background-color: #ff4500;
   color: white;
-  padding: 12px;
-  width: 100%;
+  padding: 8px 15px;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
 }
-form button:hover {
-  background-color: #218838;
+.btn-action:hover {
+  background-color: #e03e00;
+}
+form input, form select, form textarea {
+  width: 100%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 5px;
+  border: none;
 }
 </style>
 </head>
@@ -79,29 +95,29 @@ form button:hover {
   </nav>
 </header>
 
-<div class="checkout-container">
-  <h2>Enter Your Details</h2>
+<section class="checkout-container">
+  <h2>Your Cart</h2>
+  <div id="checkoutItems"></div>
+  <h3 id="totalPrice"></h3>
+
+  <h2>Billing Details</h2>
   <form id="checkoutForm">
     <input type="text" id="name" placeholder="Full Name" required>
-    <input type="text" id="phone" placeholder="Phone Number" required>
-    <input type="text" id="address" placeholder="House / Street / Locality" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="tel" id="phone" placeholder="Phone Number" required>
     <input type="text" id="city" placeholder="City" required>
-    <input type="text" id="state" placeholder="State" required>
-    <input type="text" id="pincode" placeholder="Pincode" required>
-    <select id="payment" required>
-      <option value="">Select Payment Method</option>
-      <option value="Cash on Delivery">Cash on Delivery</option>
-      <option value="Paid Online">Paid Online</option>
-    </select>
-    <button type="submit">Place Order</button>
+    <input type="text" id="house" placeholder="House/Street" required>
+    <input type="text" id="pincode" placeholder="Pin Code" required>
+    <button type="submit" class="btn-action">Place Order</button>
   </form>
-</div>
+</section>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+import { getDatabase, ref, onValue, remove, push } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyCQwYdtbUSM7WM25eNUzN4NxFXEvvRGN1k",
   authDomain: "mnu-collection-9282f.firebaseapp.com",
@@ -116,57 +132,99 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let userId = "guest"; // For simplicity, every user can have a unique guest ID
+// Temporary User ID
+let userId = localStorage.getItem('tempUserId');
+if (!userId) {
+  userId = "user_" + Math.random().toString(36).substr(2, 9);
+  localStorage.setItem('tempUserId', userId);
+}
+const cartRef = ref(db, 'carts/' + userId);
+const ordersRef = ref(db, 'orders');
 
-const checkoutForm = document.getElementById('checkoutForm');
+// Display Cart Items
+const checkoutItemsDiv = document.getElementById('checkoutItems');
+const totalPriceEl = document.getElementById('totalPrice');
 
-checkoutForm.addEventListener('submit', (e) => {
+function displayCart(cartData) {
+  checkoutItemsDiv.innerHTML = '';
+  let total = 0;
+  if(cartData){
+    Object.values(cartData).forEach(product => {
+      total += product.price * (product.quantity || 1);
+      const div = document.createElement('div');
+      div.className = 'checkout-item';
+      div.innerHTML = `
+        <img src="${product.image}" alt="${product.name}">
+        <div>
+          <h4>${product.name}</h4>
+          <p>₹${product.price} x ${product.quantity || 1}</p>
+        </div>
+      `;
+      checkoutItemsDiv.appendChild(div);
+    });
+  }
+  totalPriceEl.textContent = Total: ₹${total};
+}
+
+// Listen to cart changes
+onValue(cartRef, (snapshot) => {
+  displayCart(snapshot.val());
+});
+
+// Handle form submission
+document.getElementById('checkoutForm').addEventListener('submit', e => {
   e.preventDefault();
-  
   const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
   const phone = document.getElementById('phone').value;
-  const address = document.getElementById('address').value;
   const city = document.getElementById('city').value;
-  const state = document.getElementById('state').value;
+  const house = document.getElementById('house').value;
   const pincode = document.getElementById('pincode').value;
-  const payment = document.getElementById('payment').value;
-  
-  // Get cart items from Firebase
-  const cartRef = ref(db, 'carts/' + userId);
+
   onValue(cartRef, (snapshot) => {
-    const items = [];
-    snapshot.forEach((child) => {
-      items.push(child.val());
-    });
+    const cartData = snapshot.val();
+    if(!cartData) { alert('Cart is empty!'); return; }
 
-    if(items.length === 0){
-      alert("Cart is empty!");
-      return;
-    }
+    const order = {
+      userId,
+      name, email, phone, city, house, pincode,
+      items: cartData,
+      timestamp: Date.now(),
+      paymentStatus: "Pending"
+    };
+    push(ordersRef, order);
 
-    const total = items.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
-
-    const orderRef = push(ref(db, 'orders'));
-    set(orderRef, {
-      customerName: name,
-      phone: phone,
-      address: address,
-      city: city,
-      state: state,
-      pincode: pincode,
-      payment: payment,
-      items: items,
-      total: total,
-      time: new Date().toLocaleString()
-    }).then(() => {
-      alert("Order placed successfully!");
-      remove(ref(db, 'carts/' + userId)); // clear cart
-      window.location.href = 'index.html';
-    }).catch((err) => {
-      alert("Error placing order: " + err);
-    });
-  }, {once:true});
+    // Clear cart
+    Object.keys(cartData).forEach(key => remove(ref(db, 'carts/' + userId + '/' + key)));
+    alert('Order placed successfully!');
+    window.location.href = 'index.html';
+  }, {onlyOnce:true});
 });
 </script>
 </body>
 </html>
+
+✅ What this does:
+
+1. Loads cart items directly from Firebase for the current user.
+
+
+2. Displays all products with price, quantity, and total.
+
+
+3. Billing form includes Name, Email, Phone, City, House, Pin code.
+
+
+4. On submit, pushes order to Firebase orders and clears the cart.
+
+
+5. Works with temporary guest user ID so multiple users can checkout independently.
+
+
+
+
+---
+
+Sir, next step can be updating cart.html to also read/write from Firebase so the cart page matches shop.html and checkout.html.
+
+Do you want me to update cart.html now?
