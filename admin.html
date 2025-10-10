@@ -18,18 +18,17 @@ body {
 }
 .overlay { background: rgba(0,0,0,0.75); min-height: 100vh; }
 header { text-align: center; padding: 20px; background: rgba(0,0,0,0.8); }
-nav { display: flex; justify-content: center; gap: 20px; margin-top: 10px; }
-nav a { color: white; text-decoration: none; font-weight: bold; }
-.admin-section { max-width: 1000px; margin: 20px auto; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; }
-.admin-section h2 { text-align: center; margin-bottom: 20px; }
-.admin-section form input, .admin-section form textarea { width: 100%; padding: 10px; margin: 8px 0; border: 1px solid #ddd; border-radius: 6px; }
-.admin-section form button { padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-.admin-section form button:hover { background-color: #218838; }
-.preview-item { background: rgba(255,255,255,0.1); padding: 10px; margin-bottom: 15px; border-radius: 10px; display: flex; align-items: center; gap: 10px; }
-.preview-item img { max-width: 100px; border-radius: 6px; }
-.preview-item div { flex: 1; }
-.preview-item button { background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; }
-.preview-item button:hover { background-color: #a71d2a; }
+nav { display:flex; justify-content:center; gap:20px; margin-top:10px; }
+nav a { color:white; text-decoration:none; font-weight:bold; }
+.admin-section { max-width:1000px; margin:20px auto; padding:20px; background: rgba(255,255,255,0.1); border-radius:10px; }
+.admin-section h2 { text-align:center; margin-bottom:20px; }
+.admin-section form input, .admin-section form textarea { width:100%; padding:10px; margin:8px 0; border:1px solid #ddd; border-radius:6px; }
+.admin-section form button { padding:12px; background-color:#28a745; color:white; border:none; border-radius:6px; cursor:pointer; margin-top:10px; }
+.admin-section form button:hover { background-color:#218838; }
+.preview-item { background: rgba(255,255,255,0.1); padding:10px; margin-bottom:15px; border-radius:10px; display:flex; align-items:center; gap:15px; }
+.preview-item img { max-width:100px; border-radius:6px; }
+.preview-item button { padding:6px 12px; border:none; border-radius:5px; cursor:pointer; background-color:#dc3545; color:white; }
+.preview-item button:hover { background-color:#b52b2b; }
 </style>
 </head>
 <body>
@@ -59,9 +58,9 @@ nav a { color: white; text-decoration: none; font-weight: bold; }
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-storage.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -71,26 +70,24 @@ const firebaseConfig = {
   projectId: "mnu-collection-9282f",
   storageBucket: "mnu-collection-9282f.appspot.com",
   messagingSenderId: "88757917123",
-  appId: "1:88757917123:web:3b1f8f53654fee25089976",
-  measurementId: "G-JW6LQER5TD"
+  appId: "1:88757917123:web:3b1f8f53654fee25089976"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
 
-// ---------- PRODUCT MANAGEMENT ----------
 const adminForm = document.getElementById('adminForm');
 const preview = document.getElementById('preview');
 
+// Display products from Firebase
 function displayProducts() {
   const productsRef = ref(db, 'products/');
-  onValue(productsRef, (snapshot) => {
+  onValue(productsRef, snapshot => {
     preview.innerHTML = '';
-    snapshot.forEach(childSnapshot => {
-      const product = childSnapshot.val();
-      const key = childSnapshot.key;
-
+    snapshot.forEach(childSnap => {
+      const product = childSnap.val();
+      const key = childSnap.key;
       const div = document.createElement('div');
       div.className = 'preview-item';
       div.innerHTML = `
@@ -99,7 +96,6 @@ function displayProducts() {
           <h3>${product.name}</h3>
           <p>₹${product.price}</p>
           <p>${product.description}</p>
-          <p>Added: ${product.time}</p>
         </div>
         <button onclick="removeProduct('${key}')">Remove</button>
       `;
@@ -108,39 +104,35 @@ function displayProducts() {
   });
 }
 
-window.removeProduct = async (key) => {
-  if(confirm("Are you sure you want to remove this product?")) {
-    await remove(ref(db, 'products/' + key));
+// Remove product
+window.removeProduct = key => {
+  if(confirm("Are you sure you want to remove this product?")){
+    remove(ref(db, 'products/' + key));
   }
 };
 
-adminForm.addEventListener('submit', async (e) => {
-  e.preventDefault();
+displayProducts();
 
-  const name = document.getElementById('name').value.trim();
+// Handle add product
+adminForm.addEventListener('submit', e => {
+  e.preventDefault();
+  const name = document.getElementById('name').value;
   const price = parseFloat(document.getElementById('price').value);
-  const description = document.getElementById('description').value.trim();
+  const description = document.getElementById('description').value;
   const imageFile = document.getElementById('image').files[0];
 
-  if(!name || !price || !description || !imageFile) return alert("Please fill all fields.");
-
   // Upload image to Firebase Storage
-  const storageRef = sRef(storage, 'product-images/' + Date.now() + '-' + imageFile.name);
-  const snapshot = await uploadBytes(storageRef, imageFile);
-  const imageUrl = await getDownloadURL(snapshot.ref);
-
-  // Save product in database
-  const product = {
-    name, price, description, image: imageUrl, time: new Date().toLocaleString()
-  };
-  await push(ref(db, 'products/'), product);
-
-  adminForm.reset();
-  alert("Product added successfully!");
+  const imgRef = storageRef(storage, 'products/' + Date.now() + '_' + imageFile.name);
+  uploadBytes(imgRef, imageFile).then(snapshot=>{
+    getDownloadURL(snapshot.ref).then(url=>{
+      push(ref(db, 'products/'), {
+        name, price, description, image: url, time: new Date().toLocaleString()
+      });
+      adminForm.reset();
+      alert("Product added successfully!");
+    });
+  });
 });
-
-// Initial display
-displayProducts();
 </script>
 </body>
 </html>
