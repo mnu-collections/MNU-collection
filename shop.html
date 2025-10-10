@@ -174,7 +174,6 @@ document.querySelectorAll('.add-to-cart').forEach(button => {
       quantity: 1
     };
 
-    // Check if product already exists in cart
     const existingIndex = cart.findIndex(p => p.name === product.name);
     if(existingIndex !== -1){
       cart[existingIndex].quantity += 1;
@@ -198,7 +197,7 @@ document.querySelectorAll('.buy-now').forEach(button => {
       image: card.dataset.image,
       quantity: 1
     };
-    cart = [product]; // replace cart with single item
+    cart = [product];
     await set(ref(db, 'carts/' + userId), cart);
     window.location.href = 'cart.html';
   });
