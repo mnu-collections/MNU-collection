@@ -7,171 +7,202 @@
 <link rel="stylesheet" href="style.css">
 <style>
 body {
-    background-color: black;
-    background-image: url('https://images.pexels.com/photos/1662298/pexels-photo-1662298.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    color: white;
-    margin: 0;
-    font-family: Arial, sans-serif;
+  background-color: black;
+  background-image: url('https://images.pexels.com/photos/1662298/pexels-photo-1662298.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: white;
+  margin: 0;
+  font-family: Arial, sans-serif;
 }
 .overlay {
-    background: rgba(0,0,0,0.75);
-    min-height: 100vh;
+  background: rgba(0,0,0,0.75);
+  min-height: 100vh;
 }
 header {
-    text-align: center;
-    padding: 20px;
-    background: rgba(0,0,0,0.8);
-    position: relative;
-}
-.admin-btn {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    background-color: #ff4500;
-    color: white;
-    padding: 8px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-}
-.admin-btn:hover {
-    background-color: #e03e00;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0,0,0,0.8);
 }
 nav {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 10px;
 }
 nav a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
 }
 .products {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    padding: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 20px;
 }
 .product-card {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid white;
-    border-radius: 10px;
-    padding: 10px;
-    text-align: center;
-    transition: 0.3s;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid white;
+  border-radius: 10px;
+  padding: 10px;
+  text-align: center;
+  transition: 0.3s;
 }
 .product-card:hover {
-    transform: scale(1.05);
-    background: rgba(255,255,255,0.2);
+  transform: scale(1.05);
+  background: rgba(255,255,255,0.2);
 }
 .product-card img {
-    width: 100%;
-    border-radius: 10px;
+  width: 100%;
+  border-radius: 10px;
 }
 .product-card button {
-    margin: 5px 5px 0 5px;
-    padding: 8px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.3s;
+  margin: 5px 5px 0 5px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
 }
 .add-to-cart {
-    background-color: #28a745;
-    color: white;
+  background-color: #28a745;
+  color: white;
 }
 .add-to-cart:hover {
-    background-color: #218838;
+  background-color: #218838;
 }
 .buy-now {
-    background-color: #ff4500;
-    color: white;
+  background-color: #ff4500;
+  color: white;
 }
 .buy-now:hover {
-    background-color: #e03e00;
-}
-footer {
-    text-align: center;
-    padding: 20px;
-    background: rgba(0,0,0,0.8);
-    margin-top: 20px;
+  background-color: #e03e00;
 }
 </style>
 </head>
 <body>
 <div class="overlay">
 <header>
-    <h1>MNU Collection</h1>
-    <button class="admin-btn" onclick="window.location.href='admin.html'">Admin</button>
-    <nav>
-        <a href="index.html">Home</a>
-        <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
-    </nav>
+  <h1>MNU Collection</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="admin.html">Admin</a>
+    <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+  </nav>
 </header>
 
 <section class="products">
-    <div class="product-card" data-name="T-shirt 1" data-price="499">
-        <img src="images/tshirt1.jpg" alt="T-shirt 1">
-        <h3>T-shirt 1</h3>
-        <p>Price: ₹499</p>
-        <button class="add-to-cart">Add to Cart</button>
-        <button class="buy-now">Buy Now</button>
-    </div>
-    <div class="product-card" data-name="T-shirt 2" data-price="599">
-        <img src="images/tshirt2.jpg" alt="T-shirt 2">
-        <h3>T-shirt 2</h3>
-        <p>Price: ₹599</p>
-        <button class="add-to-cart">Add to Cart</button>
-        <button class="buy-now">Buy Now</button>
-    </div>
-    <div class="product-card" data-name="T-shirt 3" data-price="699">
-        <img src="images/tshirt3.jpg" alt="T-shirt 3">
-        <h3>T-shirt 3</h3>
-        <p>Price: ₹699</p>
-        <button class="add-to-cart">Add to Cart</button>
-        <button class="buy-now">Buy Now</button>
-    </div>
+  <div class="product-card" data-name="T-shirt 1" data-price="499" data-image="images/tshirt1.jpg">
+    <img src="images/tshirt1.jpg" alt="T-shirt 1">
+    <h3>T-shirt 1</h3>
+    <p>Price: ₹499</p>
+    <button class="add-to-cart">Add to Cart</button>
+    <button class="buy-now">Buy Now</button>
+  </div>
+  <div class="product-card" data-name="T-shirt 2" data-price="599" data-image="images/tshirt2.jpg">
+    <img src="images/tshirt2.jpg" alt="T-shirt 2">
+    <h3>T-shirt 2</h3>
+    <p>Price: ₹599</p>
+    <button class="add-to-cart">Add to Cart</button>
+    <button class="buy-now">Buy Now</button>
+  </div>
+  <div class="product-card" data-name="T-shirt 3" data-price="699" data-image="images/tshirt3.jpg">
+    <img src="images/tshirt3.jpg" alt="T-shirt 3">
+    <h3>T-shirt 3</h3>
+    <p>Price: ₹699</p>
+    <button class="add-to-cart">Add to Cart</button>
+    <button class="buy-now">Buy Now</button>
+  </div>
 </section>
-
-<footer>
-    &copy; 2025 MNU Collection. All rights reserved.
-</footer>
 </div>
 
-<script>
-let cart = JSON.parse(localStorage.getItem('cart')) || [];
-updateCartCount();
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
+import { getDatabase, ref, get, set, child } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
 
-document.querySelectorAll('.add-to-cart').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const productCard = e.target.closest('.product-card');
-        const product = { name: productCard.dataset.name, price: parseInt(productCard.dataset.price) };
-        cart.push(product);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        updateCartCount();
-        alert(product.name + " added to cart!");
-    });
-});
+// Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyCQwYdtbUSM7WM25eNUzN4NxFXEvvRGN1k",
+  authDomain: "mnu-collection-9282f.firebaseapp.com",
+  databaseURL: "https://mnu-collection-9282f-default-rtdb.firebaseio.com",
+  projectId: "mnu-collection-9282f",
+  storageBucket: "mnu-collection-9282f.firebasestorage.app",
+  messagingSenderId: "88757917123",
+  appId: "1:88757917123:web:3b1f8f53654fee25089976",
+  measurementId: "G-JW6LQER5TD"
+};
 
-document.querySelectorAll('.buy-now').forEach(button => {
-    button.addEventListener('click', (e) => {
-        const productCard = e.target.closest('.product-card');
-        const product = { name: productCard.dataset.name, price: parseInt(productCard.dataset.price) };
-        localStorage.setItem('cart', JSON.stringify([product]));
-        window.location.href = 'cart.html';
-    });
-});
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
-function updateCartCount() {
-    document.getElementById('cart-count').textContent = cart.length;
+// Temporary unique user ID
+let userId = localStorage.getItem('tempUserId');
+if(!userId){
+  userId = 'user_' + Date.now();
+  localStorage.setItem('tempUserId', userId);
 }
+
+// Load current cart from Firebase
+let cart = [];
+async function loadCart() {
+  const snapshot = await get(child(ref(db), 'carts/' + userId));
+  if(snapshot.exists()){
+    cart = snapshot.val();
+  } else {
+    cart = [];
+  }
+  updateCartCount();
+}
+loadCart();
+
+// Update cart count in nav
+function updateCartCount() {
+  document.getElementById('cart-count').textContent = cart.length;
+}
+
+// Add to cart
+document.querySelectorAll('.add-to-cart').forEach(button => {
+  button.addEventListener('click', async (e) => {
+    const card = e.target.closest('.product-card');
+    const product = {
+      name: card.dataset.name,
+      price: parseInt(card.dataset.price),
+      image: card.dataset.image,
+      quantity: 1
+    };
+
+    // Check if product already exists in cart
+    const existingIndex = cart.findIndex(p => p.name === product.name);
+    if(existingIndex !== -1){
+      cart[existingIndex].quantity += 1;
+    } else {
+      cart.push(product);
+    }
+
+    await set(ref(db, 'carts/' + userId), cart);
+    updateCartCount();
+    alert(product.name + " added to cart!");
+  });
+});
+
+// Buy Now
+document.querySelectorAll('.buy-now').forEach(button => {
+  button.addEventListener('click', async (e) => {
+    const card = e.target.closest('.product-card');
+    const product = {
+      name: card.dataset.name,
+      price: parseInt(card.dataset.price),
+      image: card.dataset.image,
+      quantity: 1
+    };
+    cart = [product]; // replace cart with single item
+    await set(ref(db, 'carts/' + userId), cart);
+    window.location.href = 'cart.html';
+  });
+});
 </script>
 </body>
 </html>
