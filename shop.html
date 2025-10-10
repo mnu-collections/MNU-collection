@@ -7,90 +7,33 @@
 <link rel="stylesheet" href="style.css">
 <style>
 body {
+  margin:0;
+  font-family: Arial, sans-serif;
   background-color: black;
+  color: white;
   background-image: url('https://images.pexels.com/photos/1662298/pexels-photo-1662298.jpeg');
   background-size: cover;
   background-position: center;
-  background-repeat: no-repeat;
-  color: white;
-  margin: 0;
-  font-family: Arial, sans-serif;
 }
-.overlay {
-  background: rgba(0,0,0,0.75);
-  min-height: 100vh;
-}
-header {
-  text-align: center;
-  padding: 20px;
-  background: rgba(0,0,0,0.8);
-}
-nav {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 10px;
-}
-nav a {
-  color: white;
-  text-decoration: none;
-  font-weight: bold;
-}
-.products {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-  padding: 20px;
-}
-.product-card {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid white;
-  border-radius: 10px;
-  padding: 10px;
-  text-align: center;
-  transition: 0.3s;
-}
-.product-card:hover {
-  transform: scale(1.05);
-  background: rgba(255,255,255,0.2);
-}
-.product-card img {
-  width: 100%;
-  border-radius: 10px;
-}
-.product-card button {
-  margin: 5px 5px 0 5px;
-  padding: 8px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-.add-to-cart {
-  background-color: #28a745;
-  color: white;
-}
-.add-to-cart:hover {
-  background-color: #218838;
-}
-.buy-now {
-  background-color: #ff4500;
-  color: white;
-}
-.buy-now:hover {
-  background-color: #e03e00;
-}
-.product-description {
-  font-size: 0.9em;
-  color: #ddd;
-  margin: 5px 0;
-}
+.overlay { background: rgba(0,0,0,0.75); min-height: 100vh; }
+header { text-align:center; padding:20px; background: rgba(0,0,0,0.8); }
+nav { display:flex; justify-content:center; gap:20px; margin-top:10px; }
+nav a { color:white; text-decoration:none; font-weight:bold; }
+.products { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:20px; padding:20px; }
+.product-card { background: rgba(255,255,255,0.1); border-radius:10px; padding:10px; text-align:center; transition:0.3s; }
+.product-card:hover { transform: scale(1.05); background: rgba(255,255,255,0.2); }
+.product-card img { width:100%; border-radius:10px; }
+.product-card button { margin:5px 5px 0 5px; padding:8px 20px; border:none; border-radius:5px; cursor:pointer; }
+.add-to-cart { background-color: #28a745; color:white; }
+.add-to-cart:hover { background-color:#218838; }
+.buy-now { background-color:#ff4500; color:white; }
+.buy-now:hover { background-color:#e03e00; }
 </style>
 </head>
 <body>
 <div class="overlay">
 <header>
-  <h1>MNU Collection</h1>
+  <h1>MNU Collection - Shop</h1>
   <nav>
     <a href="index.html">Home</a>
     <a href="shop.html">Shop</a>
@@ -99,12 +42,14 @@ nav a {
   </nav>
 </header>
 
-<section class="products" id="products"></section>
+<section class="products" id="products">
+  <!-- Products from Firebase will load here -->
+</section>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-import { getDatabase, ref, get, set, child, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getDatabase, ref, onValue, set, child, get } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -114,115 +59,64 @@ const firebaseConfig = {
   projectId: "mnu-collection-9282f",
   storageBucket: "mnu-collection-9282f.firebasestorage.app",
   messagingSenderId: "88757917123",
-  appId: "1:88757917123:web:3b1f8f53654fee25089976",
-  measurementId: "G-JW6LQER5TD"
+  appId: "1:88757917123:web:3b1f8f53654fee25089976"
 };
-
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// Temporary unique user ID
+const productsDiv = document.getElementById('products');
+const cartCount = document.getElementById('cart-count');
+
+// Temporary user ID
 let userId = localStorage.getItem('tempUserId');
 if(!userId){
   userId = 'user_' + Date.now();
   localStorage.setItem('tempUserId', userId);
 }
-
-// Cart
 let cart = [];
-const cartCountEl = document.getElementById('cart-count');
 
-// Load current cart
-async function loadCart() {
+// Load cart
+async function loadCart(){
   const snapshot = await get(child(ref(db), 'carts/' + userId));
-  if(snapshot.exists()) {
-    cart = snapshot.val();
-  } else {
-    cart = [];
-  }
-  updateCartCount();
+  cart = snapshot.exists() ? snapshot.val() : [];
+  cartCount.textContent = cart.length;
 }
+loadCart();
 
-function updateCartCount() {
-  cartCountEl.textContent = cart.length;
-}
-
-// Load products dynamically
-const productsSection = document.getElementById('products');
+// Load products from Firebase
 const productsRef = ref(db, 'products/');
-
-onValue(productsRef, (snapshot) => {
-  productsSection.innerHTML = '';
-  snapshot.forEach(childSnapshot => {
-    const product = childSnapshot.val();
-    const key = childSnapshot.key;
-
-    const div = document.createElement('div');
-    div.className = 'product-card';
-    div.dataset.key = key;
-    div.dataset.name = product.name;
-    div.dataset.price = product.price;
-    div.dataset.image = product.image;
-
-    div.innerHTML = `
-      <img src="${product.image}" alt="${product.name}">
-      <h3>${product.name}</h3>
-      <p class="product-description">${product.description}</p>
-      <p>Price: ₹${product.price}</p>
+onValue(productsRef, snapshot=>{
+  productsDiv.innerHTML = '';
+  snapshot.forEach(childSnap=>{
+    const p = childSnap.val();
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.innerHTML = `
+      <img src="${p.image}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p>₹${p.price}</p>
       <button class="add-to-cart">Add to Cart</button>
       <button class="buy-now">Buy Now</button>
     `;
+    productsDiv.appendChild(card);
 
-    productsSection.appendChild(div);
-  });
-
-  attachButtons();
-});
-
-// Attach button events
-function attachButtons() {
-  document.querySelectorAll('.add-to-cart').forEach(button => {
-    button.addEventListener('click', async (e) => {
-      const card = e.target.closest('.product-card');
-      const product = {
-        name: card.dataset.name,
-        price: parseInt(card.dataset.price),
-        image: card.dataset.image,
-        quantity: 1
-      };
-
-      const existingIndex = cart.findIndex(p => p.name === product.name);
-      if(existingIndex !== -1) {
-        cart[existingIndex].quantity += 1;
-      } else {
-        cart.push(product);
-      }
-
+    // Add to Cart
+    card.querySelector('.add-to-cart').addEventListener('click', async ()=>{
+      const index = cart.findIndex(item=>item.name===p.name);
+      if(index!==-1){ cart[index].quantity+=1; } else { cart.push({...p, quantity:1}); }
       await set(ref(db, 'carts/' + userId), cart);
-      updateCartCount();
-      alert(product.name + " added to cart!");
+      cartCount.textContent = cart.length;
+      alert(p.name + " added to cart!");
     });
-  });
 
-  document.querySelectorAll('.buy-now').forEach(button => {
-    button.addEventListener('click', async (e) => {
-      const card = e.target.closest('.product-card');
-      const product = {
-        name: card.dataset.name,
-        price: parseInt(card.dataset.price),
-        image: card.dataset.image,
-        quantity: 1
-      };
-
-      cart = [product]; // replace cart with this item
+    // Buy Now
+    card.querySelector('.buy-now').addEventListener('click', async ()=>{
+      cart = [{...p, quantity:1}];
       await set(ref(db, 'carts/' + userId), cart);
       window.location.href = 'cart.html';
     });
   });
-}
-
-// Initial cart load
-loadCart();
+});
 </script>
 </body>
 </html>
