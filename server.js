@@ -1,107 +1,137 @@
-// ---------- SERVER SETUP ----------
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, set, onValue, remove } from "firebase/database";
-import bodyParser from 'body-parser';
+/* General */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
 
-const __filename = fileURLToPath(import.meta.url);
-const _dirname = path.dirname(_filename);
+body {
+    background-color: #000;
+    color: #fff;
+}
 
-const app = express();
-const port = process.env.PORT || 3000;
+/* Header */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 50px;
+    background-color: #000;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
 
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+.logo {
+    font-size: 28px;
+    font-weight: 700;
+}
 
-// ---------- FIREBASE CONFIG ----------
-const firebaseConfig = {
-    apiKey: "AIzaSyCQwYdtbUSM7WM25eNUzN4NxFXEvvRGN1k",
-    authDomain: "mnu-collection-9282f.firebaseapp.com",
-    databaseURL: "https://mnu-collection-9282f-default-rtdb.firebaseio.com",
-    projectId: "mnu-collection-9282f",
-    storageBucket: "mnu-collection-9282f.firebasestorage.app",
-    messagingSenderId: "88757917123",
-    appId: "1:88757917123:web:3b1f8f53654fee25089976",
-    measurementId: "G-JW6LQER5TD"
-};
+nav ul {
+    display: flex;
+    list-style: none;
+}
 
-const firebaseApp = initializeApp(firebaseConfig);
-const db = getDatabase(firebaseApp);
+nav ul li {
+    margin-left: 30px;
+}
 
-// ---------- ROUTES ----------
+nav ul li a {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 500;
+    transition: color 0.3s;
+}
 
-// Home page
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+nav ul li a:hover {
+    color: #f5c518;
+}
 
-// Shop page
-app.get('/shop', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'shop.html'));
-});
+/* Hero Section */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 100px 50px;
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('hero.jpg') no-repeat center center/cover;
+}
 
-// Cart page
-app.get('/cart', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'cart.html'));
-});
+.hero-text h1 {
+    font-size: 50px;
+    margin-bottom: 20px;
+}
 
-// Checkout page
-app.get('/checkout', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'checkout.html'));
-});
+.hero-text p {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
 
-// Login page
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
+.btn {
+    background-color: #f5c518;
+    color: #000;
+    padding: 12px 25px;
+    text-decoration: none;
+    font-weight: 700;
+    border-radius: 5px;
+    transition: background 0.3s;
+}
 
-// Admin panel
-app.get('/admin', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
-});
+.btn:hover {
+    background-color: #fff;
+}
 
-// Add product (from admin form)
-app.post('/add-product', (req, res) => {
-    const product = req.body;
-    product.time = new Date().toLocaleString();
-    const productsRef = ref(db, 'products');
-    push(productsRef, product)
-        .then(() => res.json({ success: true }))
-        .catch(err => res.json({ success: false, error: err }));
-});
+/* Featured Products */
+.featured-products {
+    padding: 80px 50px;
+    text-align: center;
+}
 
-// Remove product
-app.post('/remove-product', (req, res) => {
-    const { key } = req.body;
-    const productRef = ref(db, 'products/' + key);
-    remove(productRef)
-        .then(() => res.json({ success: true }))
-        .catch(err => res.json({ success: false, error: err }));
-});
+.featured-products h2 {
+    font-size: 36px;
+    margin-bottom: 50px;
+}
 
-// Add order (from checkout)
-app.post('/add-order', (req, res) => {
-    const order = req.body;
-    order.time = new Date().toLocaleString();
-    const ordersRef = ref(db, 'orders');
-    push(ordersRef, order)
-        .then(() => res.json({ success: true }))
-        .catch(err => res.json({ success: false, error: err }));
-});
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
 
-// Remove order
-app.post('/remove-order', (req, res) => {
-    const { key } = req.body;
-    const orderRef = ref(db, 'orders/' + key);
-    remove(orderRef)
-        .then(() => res.json({ success: true }))
-        .catch(err => res.json({ success: false, error: err }));
-});
+.product-card {
+    background-color: #111;
+    padding: 20px;
+    border-radius: 10px;
+    transition: transform 0.3s;
+}
 
-// Start server
-app.listen(port, () => {
-    console.log(Server running at http://localhost:${port});
-});
+.product-card img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.product-card h3 {
+    margin-bottom: 10px;
+}
+
+.product-card p {
+    margin-bottom: 15px;
+}
+
+.product-card .btn {
+    display: inline-block;
+}
+
+/* Hover effect */
+.product-card:hover {
+    transform: translateY(-10px);
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 30px;
+    background-color: #000;
+    border-top: 1px solid #333;
+}
