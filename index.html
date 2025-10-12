@@ -1,292 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MNU Collection</title>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Roboto', sans-serif;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNU Collection Header</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5; /* minimal background */
+  }
 
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #000000, #ffde59, #ffffff, #3b82f6);
-      color: #fff;
-      background-size: 400% 400%;
-      animation: gradientAnimation 15s ease infinite;
-    }
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #000; /* black theme */
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
 
-    @keyframes gradientAnimation {
-      0% {background-position: 0% 50%;}
-      50% {background-position: 100% 50%;}
-      100% {background-position: 0% 50%;}
-    }
+  /* Avatar circle */
+  .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #111; /* dark placeholder */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5); /* white shadow */
+  }
 
-    /* Top Right DP */
-    .user-dp {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid #fff;
-      overflow: hidden;
-      cursor: pointer;
-    }
+  .avatar i {
+    color: #fff;
+    font-size: 24px;
+  }
 
-    .user-dp img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+  /* Website name */
+  .site-name {
+    font-family: 'Permanent Marker', cursive; /* handwritten style font */
+    font-size: 24px;
+    color: #00f; /* blue color for luxury feel */
+    flex-grow: 1;
+    text-align: center;
+  }
 
-    /* Navigation */
-    header {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      padding: 20px 0;
-      position: relative;
-      z-index: 10;
-    }
+  /* Search bar */
+  .search-container {
+    position: relative;
+  }
 
-    nav {
-      display: flex;
-      gap: 50px;
-      font-weight: 500;
-      font-size: 18px;
-      text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
-    }
+  .search-container input[type="text"] {
+    padding: 5px 30px 5px 10px;
+    border-radius: 20px;
+    border: none;
+    outline: none;
+  }
 
-    nav a {
-      text-decoration: none;
-      color: #fff;
-      position: relative;
-      transition: 0.3s;
-    }
-
-    nav a::after {
-      content: '';
-      position: absolute;
-      width: 0;
-      height: 2px;
-      background: #fff;
-      bottom: -5px;
-      left: 0;
-      transition: width 0.3s;
-    }
-
-    nav a:hover::after {
-      width: 100%;
-    }
-
-    /* Title */
-    .site-title {
-      text-align: center;
-      margin-top: 20px;
-      font-family: 'Great Vibes', cursive;
-      font-size: 60px;
-      color: #fff;
-      letter-spacing: 2px;
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.6);
-    }
-
-    /* Search Bar */
-    .search-container {
-      display: flex;
-      justify-content: center;
-      margin-top: 25px;
-    }
-
-    .search-container input[type="text"] {
-      width: 50%;
-      padding: 15px 20px;
-      border-radius: 25px;
-      border: 2px solid #fff;
-      font-size: 18px;
-      outline: none;
-      background: rgba(255,255,255,0.2);
-      color: #111;
-      transition: 0.3s;
-    }
-
-    .search-container input[type="text"]::placeholder {
-      color: #111;
-    }
-
-    .search-container input[type="text"]:focus {
-      border-color: #ffde59;
-      background: rgba(255,255,255,0.5);
-    }
-
-    /* Shop Now Button */
-    .shop-button-container {
-      text-align: center;
-      margin-top: 30px;
-    }
-
-    .shop-button {
-      padding: 15px 40px;
-      font-size: 20px;
-      border-radius: 30px;
-      border: 2px solid #fff;
-      background-color: transparent;
-      cursor: pointer;
-      transition: 0.3s;
-      font-weight: 500;
-      color: #fff;
-    }
-
-    .shop-button:hover {
-      background-color: #ffde59;
-      color: #000;
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-      animation: bounce 0.5s;
-    }
-
-    @keyframes bounce {
-      0%, 100% {transform: translateY(-5px);}
-      50% {transform: translateY(-10px);}
-    }
-
-    /* Products Section */
-    .products-section {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 30px;
-      padding: 60px 50px;
-    }
-
-    .product-card {
-      width: 250px;
-      background: rgba(255,255,255,0.25);
-      border-radius: 15px;
-      overflow: hidden;
-      text-align: center;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-      transition: transform 0.3s, box-shadow 0.3s;
-      backdrop-filter: blur(5px);
-    }
-
-    .product-card:hover {
-      transform: translateY(-10px) scale(1.05);
-      box-shadow: 0 15px 25px rgba(0,0,0,0.3);
-    }
-
-    .product-card img {
-      width: 100%;
-      height: 250px;
-      object-fit: cover;
-    }
-
-    .product-info {
-      padding: 15px;
-      color: #111;
-    }
-
-    .product-info h3 {
-      font-size: 18px;
-      margin-bottom: 10px;
-    }
-
-    .product-info p {
-      font-size: 16px;
-      margin-bottom: 5px;
-    }
-
-    .product-info span {
-      font-weight: 600;
-      font-size: 16px;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .site-title {
-        font-size: 45px;
-      }
-
-      .search-container input[type="text"] {
-        width: 80%;
-      }
-
-      .products-section {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .product-card {
-        width: 80%;
-      }
-    }
-  </style>
+  .search-container i {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+  }
+</style>
+<!-- Load font from Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
+<!-- Load Font Awesome for person & search icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- Top Right DP -->
-  <div class="user-dp">
-    <img src="https://images.unsplash.com/photo-1603415526960-f0b4e1f360c1?auto=format&fit=crop&w=80&q=80" alt="User DP">
+<header>
+  <!-- Avatar -->
+  <div class="avatar">
+    <i class="fas fa-user"></i>
   </div>
 
-  <!-- Navigation -->
-  <header>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Shop</a>
-      <a href="#">About</a>
-      <a href="#">Cart</a>
-    </nav>
-  </header>
-
-  <!-- Title -->
-  <h1 class="site-title">MNU Collection</h1>
+  <!-- Website Name -->
+  <div class="site-name">MNU Collection</div>
 
   <!-- Search Bar -->
   <div class="search-container">
-    <input type="text" placeholder="Search for products...">
+    <input type="text" placeholder="Search...">
+    <i class="fas fa-magnifying-glass"></i>
   </div>
-
-  <!-- Shop Now Button -->
-  <div class="shop-button-container">
-    <button class="shop-button">Shop Now</button>
-  </div>
-
-  <!-- Products Section -->
-  <section class="products-section">
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1606813902300-0c54c9f7ec5d?auto=format&fit=crop&w=400&q=80" alt="Product 1">
-      <div class="product-info">
-        <h3>Classic Watch</h3>
-        <p>Luxury leather strap watch</p>
-        <span>Rs. 150</span>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1600180758891-96188b0ad4bb?auto=format&fit=crop&w=400&q=80" alt="Product 2">
-      <div class="product-info">
-        <h3>Elegant Sunglasses</h3>
-        <p>Modern stylish shades</p>
-        <span>Rs. 160</span>
-      </div>
-    </div>
-
-    <div class="product-card">
-      <img src="https://images.unsplash.com/photo-1585386959984-a415522e5e3d?auto=format&fit=crop&w=400&q=80" alt="Product 3">
-      <div class="product-info">
-        <h3>Leather Bag</h3>
-        <p>Minimalist daily bag</p>
-        <span>Rs. 170</span>
-      </div>
-    </div>
-  </section>
+</header>
 
 </body>
 </html>
