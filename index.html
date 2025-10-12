@@ -6,7 +6,6 @@
   <title>MNU Collection</title>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
   <style>
-    /* Reset */
     * {
       margin: 0;
       padding: 0;
@@ -16,8 +15,17 @@
 
     body {
       min-height: 100vh;
-      background: linear-gradient(to bottom, #fff9d6, #ffffff);
+      /* Multi-color liquid gradient */
+      background: linear-gradient(135deg, #000000, #ffde59, #ffffff, #3b82f6);
       color: #111;
+      background-size: 400% 400%;
+      animation: gradientAnimation 15s ease infinite;
+    }
+
+    @keyframes gradientAnimation {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
     /* Navigation */
@@ -32,19 +40,31 @@
 
     nav {
       display: flex;
-      gap: 40px;
+      gap: 50px;
       font-weight: 500;
       font-size: 18px;
     }
 
     nav a {
       text-decoration: none;
-      color: #111;
+      color: #fff;
+      position: relative;
       transition: 0.3s;
     }
 
-    nav a:hover {
-      color: #555;
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      background: #fff;
+      bottom: -5px;
+      left: 0;
+      transition: width 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
     }
 
     /* Title */
@@ -53,6 +73,7 @@
       margin-top: 20px;
       font-family: 'Great Vibes', cursive;
       font-size: 60px;
+      color: #fff;
       letter-spacing: 2px;
     }
 
@@ -67,14 +88,21 @@
       width: 50%;
       padding: 15px 20px;
       border-radius: 25px;
-      border: 2px solid #ccc;
+      border: 2px solid #fff;
       font-size: 18px;
       outline: none;
+      background: rgba(255,255,255,0.2);
+      color: #111;
       transition: 0.3s;
     }
 
+    .search-container input[type="text"]::placeholder {
+      color: #111;
+    }
+
     .search-container input[type="text"]:focus {
-      border-color: #888;
+      border-color: #ffde59;
+      background: rgba(255,255,255,0.5);
     }
 
     /* Shop Now Button */
@@ -84,19 +112,28 @@
     }
 
     .shop-button {
-      padding: 15px 35px;
+      padding: 15px 40px;
       font-size: 20px;
       border-radius: 30px;
-      border: 2px solid #111;
+      border: 2px solid #fff;
       background-color: transparent;
       cursor: pointer;
       transition: 0.3s;
       font-weight: 500;
+      color: #fff;
     }
 
     .shop-button:hover {
-      background-color: #111;
-      color: #fff;
+      background-color: #ffde59;
+      color: #000;
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      animation: bounce 0.5s;
+    }
+
+    @keyframes bounce {
+      0%, 100% {transform: translateY(-5px);}
+      50% {transform: translateY(-10px);}
     }
 
     /* Products Section */
@@ -110,16 +147,17 @@
 
     .product-card {
       width: 250px;
-      background: #fff;
+      background: rgba(255,255,255,0.9);
       border-radius: 15px;
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
       overflow: hidden;
+      text-align: center;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
       transition: transform 0.3s, box-shadow 0.3s;
     }
 
     .product-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 15px 25px rgba(0,0,0,0.3);
     }
 
     .product-card img {
@@ -130,7 +168,6 @@
 
     .product-info {
       padding: 15px;
-      text-align: center;
     }
 
     .product-info h3 {
@@ -173,7 +210,7 @@
 </head>
 <body>
 
-  <!-- Header Navigation -->
+  <!-- Navigation -->
   <header>
     <nav>
       <a href="#">Home</a>
@@ -183,7 +220,7 @@
     </nav>
   </header>
 
-  <!-- Website Title -->
+  <!-- Title -->
   <h1 class="site-title">MNU Collection</h1>
 
   <!-- Search Bar -->
