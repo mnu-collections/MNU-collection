@@ -5,174 +5,89 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin - MNU Collection</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Admin page specific styling */
+    .hero-overlay { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .admin-box { background: #fff; color: #000; padding: 2rem; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.5); width: 350px; max-width: 90%; text-align: center; animation: fadeInUp 0.8s ease forwards; }
+    .admin-box h2, .admin-box h3 { margin-bottom: 1rem; }
+    .admin-box input, .admin-box textarea, .admin-box button { width: 100%; margin: 0.5rem 0; padding: 0.7rem; border-radius: 25px; border: 1px solid #ccc; outline: none; }
+    .admin-box button { cursor: pointer; transition: all 0.3s ease; }
+    .admin-box button:hover { transform: scale(1.05); background-color: #ffc107; color: #000; }
+    .dashboard-section { margin-bottom: 2rem; text-align: left; }
+    .manage-list { background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 15px; margin-top: 0.5rem; }
+    #logoutBtn { background-color: #e74c3c; color: #fff; }
+    #logoutBtn:hover { background-color: #c0392b; }
+  </style>
 </head>
 <body>
-  <!-- NAVBAR -->
-  <nav class="nav">
-    <div class="brand">MNU Collection</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="cart.html">Cart</a></li>
-      <li><a href="checkout.html">Checkout</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="admin.html" class="btn small">Admin</a></li>
-    </ul>
-  </nav>
 
-  <!-- HERO SECTION -->
+  <!-- HERO / BACKGROUND -->
   <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
     <div class="hero-overlay">
-      <div class="hero-content">
-        <h1>Admin Panel</h1>
-        <p>Manage Products & Orders</p>
+
+      <!-- LOGIN BOX -->
+      <div class="admin-box" id="loginBox">
+        <h2>Admin Login</h2>
+        <input type="text" id="adminUser" placeholder="Username">
+        <input type="password" id="adminPass" placeholder="Password">
+        <button id="loginBtn">Login</button>
       </div>
+
+      <!-- DASHBOARD BOX -->
+      <div class="admin-box" id="dashboard" style="display:none; width: 600px; max-width: 90%;">
+        <h2>Welcome Admin</h2>
+
+        <!-- ADD PRODUCT -->
+        <div class="dashboard-section">
+          <h3>Add New Product</h3>
+          <input type="text" id="productName" placeholder="Product Name">
+          <input type="number" id="productPrice" placeholder="Price">
+          <textarea id="productDesc" placeholder="Description"></textarea>
+          <input type="file" id="productImage">
+          <button id="addProductBtn">Add Product</button>
+        </div>
+
+        <!-- MANAGE PRODUCTS -->
+        <div class="dashboard-section">
+          <h3>Manage Products</h3>
+          <div id="productList" class="manage-list">No products uploaded yet.</div>
+        </div>
+
+        <!-- ORDERS -->
+        <div class="dashboard-section">
+          <h3>Orders</h3>
+          <div id="orderList" class="manage-list">No orders received yet.</div>
+        </div>
+
+        <button id="logoutBtn">Logout</button>
+      </div>
+
     </div>
   </header>
 
-  <!-- LOGIN SECTION -->
-  <section id="loginSection" class="container">
-    <h2>Admin Login</h2>
-    <input type="text" id="adminUser" placeholder="Username">
-    <input type="password" id="adminPass" placeholder="Password">
-    <button id="loginBtn" class="btn">Login</button>
-    <p id="loginMsg" style="color: red;"></p>
-  </section>
-
-  <!-- ADMIN DASHBOARD -->
-  <section id="adminDashboard" class="container hidden">
-    <h2>Welcome, Admin</h2>
-
-    <!-- ADD PRODUCT -->
-    <div class="admin-box">
-      <h3>Add New Product</h3>
-      <input id="pName" placeholder="Product Name">
-      <input id="pPrice" placeholder="Price">
-      <textarea id="pDesc" placeholder="Description"></textarea>
-      <input id="pImage" type="file" accept="image/*">
-      <button id="addProductBtn" class="btn">Upload & Add</button>
-    </div>
-
-    <!-- MANAGE PRODUCTS -->
-    <div class="admin-box">
-      <h3>Manage Products</h3>
-      <div id="adminProductsList"></div>
-    </div>
-
-    <!-- ORDERS -->
-    <div class="admin-box">
-      <h3>Orders</h3>
-      <div id="adminOrdersList">(Orders will appear here)</div>
-    </div>
-
-    <button id="logoutBtn" class="btn danger">Logout</button>
-  </section>
-
-  <!-- SUPABASE CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
   <script>
-    // SUPABASE CONFIG
-    const SUPABASE_URL = 'https://adxtanejeewibwmsxgae.supabase.co';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // replace
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    // ADMIN LOGIN FUNCTIONALITY
+    const loginBox = document.getElementById('loginBox');
+    const dashboard = document.getElementById('dashboard');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
 
-    // HARDCODED ADMIN
-    const ADMIN_USER = 'admin';
-    const ADMIN_PASS = 'mnuadmin123';
-
-    const loginSection = document.getElementById('loginSection');
-    const dashboard = document.getElementById('adminDashboard');
-    const loginMsg = document.getElementById('loginMsg');
-
-    document.getElementById('loginBtn').addEventListener('click', ()=>{
-      const user = document.getElementById('adminUser').value;
-      const pass = document.getElementById('adminPass').value;
-      if(user === ADMIN_USER && pass === ADMIN_PASS){
-        loginSection.classList.add('hidden');
-        dashboard.classList.remove('hidden');
-        loadProducts();
-        loadOrders();
+    loginBtn.addEventListener('click', ()=>{
+      const username = document.getElementById('adminUser').value;
+      const password = document.getElementById('adminPass').value;
+      if(username === 'admin' && password === 'admin123'){
+        loginBox.style.display = 'none';
+        dashboard.style.display = 'block';
       } else {
-        loginMsg.textContent = 'Invalid credentials';
+        alert('Invalid credentials');
       }
     });
 
-    document.getElementById('logoutBtn').addEventListener('click', ()=>{
-      dashboard.classList.add('hidden');
-      loginSection.classList.remove('hidden');
-      document.getElementById('adminUser').value='';
-      document.getElementById('adminPass').value='';
-      loginMsg.textContent='';
+    logoutBtn.addEventListener('click', ()=>{
+      dashboard.style.display = 'none';
+      loginBox.style.display = 'block';
     });
-
-    // LOAD PRODUCTS
-    let products = [];
-    async function loadProducts(){
-      const { data, error } = await supabase.from('products').select('*').order('id',{ascending:false});
-      if(error) return console.error(error);
-      products = data || [];
-      renderAdminProducts();
-    }
-
-    function renderAdminProducts(){
-      const list = document.getElementById('adminProductsList');
-      list.innerHTML = '';
-      products.forEach(p=>{
-        const item = document.createElement('div');
-        item.className='admin-item';
-        const safeUrl = p.image_url.replace(/'/g, "\\'");
-        item.innerHTML = `
-          <div style="flex:1">${p.name} — ₹${p.price}</div>
-          <div style="display:flex;gap:8px">
-            <button onclick="deleteProduct(${p.id}, '${safeUrl}')" class="btn small danger">Delete</button>
-          </div>
-        `;
-        list.appendChild(item);
-      });
-    }
-
-    async function deleteProduct(id,imageUrl){
-      await supabase.from('products').delete().eq('id',id);
-      try{
-        const path = imageUrl.split('/storage/v1/object/public/')[1];
-        if(path) await supabase.storage.from('product-images').remove([path]);
-      }catch(e){}
-      loadProducts();
-    }
-
-    document.getElementById('addProductBtn').addEventListener('click', async ()=>{
-      const name=document.getElementById('pName').value;
-      const price=document.getElementById('pPrice').value;
-      const desc=document.getElementById('pDesc').value;
-      const file=document.getElementById('pImage').files[0];
-      if(!name||!price||!desc||!file){ alert('Fill all fields'); return; }
-      try{
-        const filePath = products/${Date.now()}_${file.name};
-        await supabase.storage.from('product-images').upload(filePath,file);
-        const url=${SUPABASE_URL}/storage/v1/object/public/product-images/${encodeURIComponent(filePath)};
-        await supabase.from('products').insert([{name,price,description:desc,image_url:url}]);
-        loadProducts();
-      }catch(e){console.error(e);}
-      document.getElementById('pName').value='';
-      document.getElementById('pPrice').value='';
-      document.getElementById('pDesc').value='';
-      document.getElementById('pImage').value='';
-    });
-
-    // LOAD ORDERS
-    async function loadOrders(){
-      const { data, error } = await supabase.from('orders').select('*').order('id',{ascending:false});
-      if(error) return console.error(error);
-      const list = document.getElementById('adminOrdersList');
-      list.innerHTML = '';
-      data.forEach(order=>{
-        const div=document.createElement('div');
-        div.className='admin-item';
-        div.innerHTML=${order.name} — ₹${order.items} — ${order.payment_status};
-        list.appendChild(div);
-      });
-    }
   </script>
+
 </body>
 </html>
