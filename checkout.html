@@ -1,54 +1,81 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Checkout — MNU Collection</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - MNU Collection</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <nav class="nav">
     <div class="brand">MNU Collection</div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="shop.html">Shop</a></li>
       <li><a href="cart.html">Cart</a></li>
+      <li><a href="checkout.html">Checkout</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="admin.html" class="btn small">Admin</a></li>
     </ul>
   </nav>
 
-  <main class="container">
-    <h1>Checkout</h1>
-    <form id="checkoutForm">
-      <label>Full name</label>
-      <input id="cName" required />
+  <!-- HERO SECTION -->
+  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1>Finalize Your Order</h1>
+        <p>Enter your details to complete purchase</p>
+      </div>
+    </div>
+  </header>
 
-      <label>Phone number</label>
-      <input id="cPhone" required />
-
-      <label>Email</label>
-      <input id="cEmail" type="email" required />
-
-      <label>Street</label>
-      <input id="cStreet" required />
-
-      <label>Landmark</label>
-      <input id="cLandmark" />
-
-      <label>City</label>
-      <input id="cCity" required />
-
-      <label>Pin code</label>
-      <input id="cPincode" required />
-
-      <label>Address (notes)</label>
-      <textarea id="cAddress"></textarea>
-
-      <button class="btn" type="submit">Place Order</button>
+  <!-- CHECKOUT FORM -->
+  <section class="container">
+    <form id="checkoutForm" class="checkout-form">
+      <input type="text" id="custName" placeholder="Full Name" required>
+      <input type="tel" id="custPhone" placeholder="Phone Number" required>
+      <input type="email" id="custEmail" placeholder="Email Address" required>
+      <input type="text" id="custAddress" placeholder="Address" required>
+      <input type="text" id="custStreet" placeholder="Street" required>
+      <input type="text" id="custLandmark" placeholder="Landmark" required>
+      <input type="text" id="custCity" placeholder="City" required>
+      <input type="text" id="custPin" placeholder="Pin Code" required>
+      <button type="submit" class="btn">Place Order</button>
     </form>
-  </main>
+  </section>
 
-  <!-- Supabase CDN -->
+  <!-- SUPABASE CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-  <script src="script.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://adxtanejeewibwmsxgae.supabase.co';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // replace
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.getElementById('checkoutForm').addEventListener('submit', async (e)=>{
+      e.preventDefault();
+      const order = {
+        name: document.getElementById('custName').value,
+        phone: document.getElementById('custPhone').value,
+        email: document.getElementById('custEmail').value,
+        address: document.getElementById('custAddress').value,
+        street: document.getElementById('custStreet').value,
+        landmark: document.getElementById('custLandmark').value,
+        city: document.getElementById('custCity').value,
+        pin: document.getElementById('custPin').value,
+        items: JSON.stringify(JSON.parse(localStorage.getItem('cart')) || []),
+        payment_status: 'Pending'
+      };
+
+      const { data, error } = await supabase.from('orders').insert([order]);
+      if(error){ alert('Error placing order'); console.error(error); return; }
+      alert('Order placed successfully!');
+      localStorage.removeItem('cart');
+      window.location.href='index.html';
+    });
+  </script>
+
 </body>
 </html>
