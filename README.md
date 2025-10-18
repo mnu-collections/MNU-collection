@@ -1,2 +1,0 @@
-# MNU-collection
-ALL  ARE  WELCOME DISCOVER YOUR STYLE 
