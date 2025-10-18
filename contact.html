@@ -5,6 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact - MNU Collection</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* CONTACT PAGE SPECIFIC */
+    .contact-container {
+      width: 90%;
+      max-width: 500px;
+      margin: 2rem auto;
+      background: rgba(255,255,255,0.05);
+      padding: 2rem;
+      border-radius: 25px;
+      text-align: center;
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    .contact-container h2 { margin-bottom: 1.5rem; }
+
+    .contact-container input, .contact-container textarea {
+      width: 100%;
+      padding: 0.7rem;
+      margin: 0.5rem 0;
+      border-radius: 25px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    .contact-container button {
+      margin-top: 1rem;
+      padding: 0.7rem 2rem;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      background-color: #ffc107;
+      transition: all 0.3s ease;
+    }
+
+    .contact-container button:hover {
+      transform: scale(1.05);
+      background-color: #ffdd57;
+    }
+  </style>
 </head>
 <body>
 
@@ -27,27 +66,24 @@
     <div class="hero-overlay">
       <div class="hero-content">
         <h1>Contact Us</h1>
-        <p>We are here to assist you</p>
       </div>
     </div>
   </header>
 
   <!-- CONTACT FORM -->
-  <section class="container contact-form">
-    <form id="contactForm">
-      <input type="text" id="contactName" placeholder="Full Name" required>
-      <input type="email" id="contactEmail" placeholder="Email Address" required>
-      <textarea id="contactMessage" placeholder="Your Message" required></textarea>
-      <button type="submit" class="btn">Send Message</button>
-    </form>
+  <section class="contact-container">
+    <h2>Get in Touch</h2>
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="email" id="email" placeholder="Email Address" required>
+    <input type="tel" id="phone" placeholder="Phone Number" required>
+    <textarea id="message" placeholder="Your Message" rows="5" required></textarea>
+    <button id="sendBtn">Send Message</button>
   </section>
 
-  <!-- FORM SUBMISSION -->
   <script>
-    document.getElementById('contactForm').addEventListener('submit', (e)=>{
-      e.preventDefault();
-      alert('Thank you! Your message has been sent.');
-      document.getElementById('contactForm').reset();
+    document.getElementById('sendBtn').addEventListener('click', ()=>{
+      alert('Message sent successfully!');
+      document.querySelector('.contact-container').reset();
     });
   </script>
 
