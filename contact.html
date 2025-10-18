@@ -1,91 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contact - MNU Collection</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    /* CONTACT PAGE SPECIFIC */
-    .contact-container {
-      width: 90%;
-      max-width: 500px;
-      margin: 2rem auto;
-      background: rgba(255,255,255,0.05);
-      padding: 2rem;
-      border-radius: 25px;
-      text-align: center;
-      animation: fadeInUp 0.8s ease forwards;
-    }
-
-    .contact-container h2 { margin-bottom: 1.5rem; }
-
-    .contact-container input, .contact-container textarea {
-      width: 100%;
-      padding: 0.7rem;
-      margin: 0.5rem 0;
-      border-radius: 25px;
-      border: 1px solid #ccc;
-      outline: none;
-    }
-
-    .contact-container button {
-      margin-top: 1rem;
-      padding: 0.7rem 2rem;
-      border-radius: 25px;
-      border: none;
-      cursor: pointer;
-      background-color: #ffc107;
-      transition: all 0.3s ease;
-    }
-
-    .contact-container button:hover {
-      transform: scale(1.05);
-      background-color: #ffdd57;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact - MNU Collection</title>
+<link rel="stylesheet" href="style.css">
+<style>
+body { background:url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat; color:#fff; font-family:Arial; margin:0; padding:0;}
+nav { display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; background:rgba(0,0,0,0.7);}
+nav a { color:#fff; text-decoration:none; margin:0 1rem; font-weight:bold;}
+nav a:hover { color:#ffc107;}
+.contact-container { max-width:800px; margin:2rem auto; background:rgba(0,0,0,0.7); padding:2rem; border-radius:25px; animation:fadeInUp 0.5s ease forwards;}
+h2{text-align:center;}
+input,textarea,button{width:100%; margin-bottom:1rem; padding:0.7rem 1rem; border-radius:25px; border:none;}
+button{background:#ffc107; cursor:pointer; transition:0.3s;}
+button:hover{background:#ffdd57; transform:scale(1.05);}
+@keyframes fadeInUp {from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
+</style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="nav">
-    <div class="brand">MNU Collection</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="cart.html">Cart</a></li>
-      <li><a href="checkout.html">Checkout</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="admin.html" class="btn small">Admin</a></li>
-    </ul>
-  </nav>
+<nav>
+  <div class="logo"><a href="index.html">MNU Collection</a></div>
+  <div class="menu">
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+    <a href="cart.html">Cart</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</nav>
 
-  <!-- HERO SECTION -->
-  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
-    <div class="hero-overlay">
-      <div class="hero-content">
-        <h1>Contact Us</h1>
-      </div>
-    </div>
-  </header>
-
-  <!-- CONTACT FORM -->
-  <section class="contact-container">
-    <h2>Get in Touch</h2>
-    <input type="text" id="name" placeholder="Full Name" required>
-    <input type="email" id="email" placeholder="Email Address" required>
-    <input type="tel" id="phone" placeholder="Phone Number" required>
-    <textarea id="message" placeholder="Your Message" rows="5" required></textarea>
-    <button id="sendBtn">Send Message</button>
-  </section>
-
-  <script>
-    document.getElementById('sendBtn').addEventListener('click', ()=>{
-      alert('Message sent successfully!');
-      document.querySelector('.contact-container').reset();
-    });
-  </script>
+<div class="contact-container">
+  <h2>Contact Us</h2>
+  <input type="text" placeholder="Full Name" required>
+  <input type="email" placeholder="Email" required>
+  <textarea placeholder="Your Message" rows="5" required></textarea>
+  <button>Send Message</button>
+</div>
 
 </body>
 </html>
