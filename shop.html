@@ -5,6 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop - MNU Collection</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* SHOP PAGE SPECIFIC */
+    .shop-container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 2rem auto;
+    }
+
+    .shop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .product-card {
+      background: rgba(255,255,255,0.05);
+      padding: 1rem;
+      border-radius: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .product-card img {
+      width: 100%;
+      border-radius: 15px;
+    }
+
+    .product-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 15px #ffc107;
+    }
+
+    .product-card h3 { margin: 0.5rem 0; }
+    .product-card p { margin: 0.3rem 0; }
+
+    .product-actions {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .product-actions button {
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .product-actions button:hover {
+      transform: scale(1.05);
+      background-color: #ffc107;
+      color: #000;
+    }
+  </style>
 </head>
 <body>
 
@@ -26,51 +82,27 @@
   <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
     <div class="hero-overlay">
       <div class="hero-content">
-        <h1>Our Products</h1>
-        <p>Explore the exclusive MNU Collection</p>
+        <h1>Shop Our Collection</h1>
       </div>
     </div>
   </header>
 
-  <!-- PRODUCTS GRID -->
-  <section class="container">
-    <div class="products-grid" id="shopProducts">
-      <!-- Products will be loaded here -->
+  <!-- SHOP PRODUCTS -->
+  <section class="shop-container">
+    <div class="shop-grid" id="shopGrid">
+      <!-- Example product (dynamic via JS later) -->
+      <div class="product-card">
+        <img src="https://via.placeholder.com/250x250" alt="Product">
+        <h3>Product Name</h3>
+        <p>₹999</p>
+        <p>Short description of product.</p>
+        <div class="product-actions">
+          <button class="addCartBtn">Add to Cart</button>
+          <button class="buyNowBtn">Buy Now</button>
+        </div>
+      </div>
     </div>
   </section>
-
-  <!-- SUPABASE CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-  <script>
-    const SUPABASE_URL = 'https://adxtanejeewibwmsxgae.supabase.co';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // replace with your key
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    async function loadProducts(){
-      const { data, error } = await supabase.from('products').select('*').order('id',{ascending:false});
-      if(error) return console.error(error);
-
-      const container = document.getElementById('shopProducts');
-      container.innerHTML = '';
-      data.forEach(p=>{
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <img src="${p.image_url}" alt="${p.name}">
-          <h3>${p.name}</h3>
-          <p>₹${p.price}</p>
-          <p>${p.description}</p>
-          <div class="product-actions">
-            <button class="btn small">Add to Cart</button>
-            <button class="btn small">Buy Now</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    loadProducts();
-  </script>
 
 </body>
 </html>
