@@ -6,23 +6,58 @@
   <title>Shop - MNU Collection</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* SHOP PAGE SPECIFIC */
-    .shop-container {
-      width: 90%;
-      max-width: 1200px;
-      margin: 2rem auto;
+    body {
+      background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      padding: 2rem;
     }
 
-    .shop-grid {
+    h1 {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 2rem;
+      animation: fadeInDown 1s ease forwards;
+    }
+
+    .search-bar {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .search-bar input {
+      padding: 0.7rem 1rem;
+      border-radius: 25px;
+      border: none;
+      width: 300px;
+      outline: none;
+    }
+
+    .search-bar button {
+      padding: 0.7rem 1.5rem;
+      border-radius: 25px;
+      border: none;
+      background-color: #ffc107;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .search-bar button:hover {
+      background-color: #ffdd57;
+      transform: scale(1.05);
+    }
+
+    .products-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 1.5rem;
     }
 
     .product-card {
-      background: rgba(255,255,255,0.05);
+      background: rgba(0,0,0,0.7);
       padding: 1rem;
       border-radius: 25px;
+      color: #fff;
       text-align: center;
       transition: all 0.3s ease;
     }
@@ -30,79 +65,83 @@
     .product-card img {
       width: 100%;
       border-radius: 15px;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
     }
 
-    .product-card:hover {
+    .product-card img:hover {
       transform: scale(1.05);
-      box-shadow: 0 0 15px #ffc107;
     }
 
-    .product-card h3 { margin: 0.5rem 0; }
-    .product-card p { margin: 0.3rem 0; }
-
-    .product-actions {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
+    .product-card button {
       margin-top: 0.5rem;
-    }
-
-    .product-actions button {
       padding: 0.5rem 1rem;
       border-radius: 25px;
       border: none;
       cursor: pointer;
+      background-color: #ffc107;
       transition: all 0.3s ease;
     }
 
-    .product-actions button:hover {
+    .product-card button:hover {
+      background-color: #ffdd57;
       transform: scale(1.05);
-      background-color: #ffc107;
-      color: #000;
     }
+
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="nav">
-    <div class="brand">MNU Collection</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="cart.html">Cart</a></li>
-      <li><a href="checkout.html">Checkout</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="admin.html" class="btn small">Admin</a></li>
-    </ul>
-  </nav>
+  <h1>Shop - MNU Collection</h1>
 
-  <!-- HERO SECTION -->
-  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
-    <div class="hero-overlay">
-      <div class="hero-content">
-        <h1>Shop Our Collection</h1>
-      </div>
-    </div>
-  </header>
+  <!-- Search Bar -->
+  <div class="search-bar">
+    <input type="text" id="shopSearch" placeholder="MNU Collection">
+    <button onclick="searchProducts()">Search</button>
+  </div>
 
-  <!-- SHOP PRODUCTS -->
-  <section class="shop-container">
-    <div class="shop-grid" id="shopGrid">
-      <!-- Example product (dynamic via JS later) -->
-      <div class="product-card">
-        <img src="https://via.placeholder.com/250x250" alt="Product">
-        <h3>Product Name</h3>
-        <p>₹999</p>
-        <p>Short description of product.</p>
-        <div class="product-actions">
+  <!-- Products Container -->
+  <div class="products-container" id="shopProducts">
+    <!-- Products will be loaded dynamically via script.js -->
+  </div>
+
+  <script type="module" src="script.js"></script>
+  <script>
+    // ---------------------- DYNAMIC PRODUCTS ----------------------
+    const shopProducts = document.getElementById('shopProducts');
+
+    // Example: if not using Supabase yet
+    const products = [
+      { name: 'Luxury T-Shirt', price: '999', description: 'Modern and stylish', image: 'https://via.placeholder.com/250' },
+      { name: 'Modern Hoodie', price: '1999', description: 'Comfortable and trendy', image: 'https://via.placeholder.com/250' },
+      { name: 'Classic Jacket', price: '2999', description: 'Unique and luxurious', image: 'https://via.placeholder.com/250' }
+    ];
+
+    function displayProducts(items) {
+      shopProducts.innerHTML = '';
+      items.forEach(product => {
+        const div = document.createElement('div');
+        div.classList.add('product-card');
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>₹${product.price}</p>
+          <p>${product.description}</p>
           <button class="addCartBtn">Add to Cart</button>
           <button class="buyNowBtn">Buy Now</button>
-        </div>
-      </div>
-    </div>
-  </section>
+        `;
+        shopProducts.appendChild(div);
+      });
+    }
 
+    displayProducts(products);
+
+    // Search functionality
+    function searchProducts() {
+      const query = document.getElementById('shopSearch').value.toLowerCase();
+      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+      displayProducts(filtered);
+    }
+  </script>
 </body>
 </html>
