@@ -5,6 +5,57 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MNU Collection</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* INDEX PAGE SPECIFIC */
+    .hero-overlay { 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      text-align: center; 
+    }
+
+    .hero-overlay h1 {
+      font-size: 3rem; 
+      color: #fff; 
+      margin-bottom: 1.5rem; 
+      animation: fadeInDown 1s ease forwards;
+    }
+
+    .search-bar {
+      display: flex;
+      width: 100%;
+      max-width: 500px;
+      border-radius: 50px;
+      overflow: hidden;
+      box-shadow: 0 0 15px rgba(0,0,0,0.5);
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    .search-bar input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: none;
+      outline: none;
+      border-radius: 50px 0 0 50px;
+      font-size: 1rem;
+    }
+
+    .search-bar button {
+      padding: 0.8rem 1.5rem;
+      border: none;
+      background-color: #ffc107;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 0 50px 50px 0;
+    }
+
+    .search-bar button:hover {
+      transform: scale(1.05);
+      background-color: #ffdd57;
+    }
+  </style>
 </head>
 <body>
 
@@ -22,58 +73,16 @@
     </ul>
   </nav>
 
-  <!-- HERO SECTION -->
+  <!-- HERO / BACKGROUND -->
   <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
     <div class="hero-overlay">
-      <div class="hero-content">
-        <h1>MNU Collection</h1>
-        <p>Luxurious, Modern, Unique</p>
+      <h1>MNU Collection</h1>
+      <div class="search-bar">
+        <input type="text" placeholder="MNU Collection">
+        <button>Search</button>
       </div>
     </div>
   </header>
-
-  <!-- MAIN CONTENT -->
-  <section class="container">
-    <h2>Welcome to MNU Collection</h2>
-    <p>Explore our exclusive products below</p>
-
-    <div class="products-grid" id="homeProducts">
-      <!-- Product cards will be loaded here -->
-    </div>
-  </section>
-
-  <!-- SUPABASE CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-  <script>
-    const SUPABASE_URL = 'https://adxtanejeewibwmsxgae.supabase.co';
-    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // replace with your key
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    async function loadProducts(){
-      const { data, error } = await supabase.from('products').select('*').order('id',{ascending:false});
-      if(error) return console.error(error);
-
-      const container = document.getElementById('homeProducts');
-      container.innerHTML = '';
-      data.forEach(p=>{
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-          <img src="${p.image_url}" alt="${p.name}">
-          <h3>${p.name}</h3>
-          <p>₹${p.price}</p>
-          <p>${p.description}</p>
-          <div class="product-actions">
-            <button class="btn small">Add to Cart</button>
-            <button class="btn small">Buy Now</button>
-          </div>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    loadProducts();
-  </script>
 
 </body>
 </html>
