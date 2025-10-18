@@ -9,160 +9,130 @@
     body {
       background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;
       min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 2rem;
       font-family: Arial, sans-serif;
+      margin: 0;
+      color: #fff;
+      padding: 0;
     }
 
-    /* Login Form */
-    #adminLoginForm {
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
       background: rgba(0,0,0,0.7);
-      padding: 2rem;
-      border-radius: 25px;
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-      animation: fadeInDown 1s ease forwards;
     }
 
-    #adminLoginForm input {
-      width: 90%;
-      padding: 0.7rem;
-      margin: 0.5rem 0;
-      border-radius: 25px;
-      border: 1px solid #ccc;
-    }
-
-    #adminLoginForm button {
-      margin-top: 1rem;
-      padding: 0.7rem 2rem;
-      border-radius: 25px;
-      border: none;
-      background-color: #ffc107;
-      color: #000;
-      cursor: pointer;
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: bold;
       transition: all 0.3s ease;
     }
 
-    #adminLoginForm button:hover {
-      transform: scale(1.05);
-      background-color: #ffdd57;
-    }
+    nav a:hover { color: #ffc107; }
 
-    /* Admin Panel */
-    #adminPanel {
-      display: none;
-      width: 100%;
-      max-width: 900px;
+    .admin-container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
       background: rgba(0,0,0,0.7);
       border-radius: 25px;
-      padding: 2rem;
-      text-align: center;
-      animation: fadeInUp 1s ease forwards;
+      animation: fadeInUp 0.5s ease forwards;
     }
 
-    #adminPanel h2 {
-      margin-bottom: 1.5rem;
-    }
+    h2 { text-align: center; margin-bottom: 2rem; }
 
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    input, textarea {
-      width: 90%;
-      padding: 0.7rem;
+    input, button {
+      padding: 0.7rem 1rem;
       border-radius: 25px;
-      margin: 0.5rem 0;
-      border: 1px solid #ccc;
+      border: none;
+      margin-bottom: 1rem;
+      width: 100%;
+      outline: none;
     }
 
     button {
-      border-radius: 25px;
-      padding: 0.7rem 1.5rem;
-      border: none;
       background-color: #ffc107;
-      color: #000;
       cursor: pointer;
       transition: all 0.3s ease;
     }
 
     button:hover {
-      transform: scale(1.05);
       background-color: #ffdd57;
+      transform: scale(1.05);
     }
 
-    .section {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: rgba(255,255,255,0.05);
-      border-radius: 25px;
-    }
+    .section { margin-bottom: 2rem; }
 
     .product-card, .order-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       background: rgba(255,255,255,0.1);
       padding: 1rem;
-      border-radius: 25px;
-      margin: 0.5rem 0;
-      text-align: left;
+      border-radius: 20px;
+      margin-bottom: 1rem;
     }
 
+    .product-card img { width: 80px; border-radius: 15px; }
   </style>
 </head>
 <body>
 
-  <!-- ADMIN LOGIN -->
-  <form id="adminLoginForm">
+  <!-- MENU -->
+  <nav>
+    <div class="logo"><a href="index.html">MNU Collection</a></div>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html">Cart</a>
+    </div>
+  </nav>
+
+  <div class="admin-container" id="loginSection">
     <h2>Admin Login</h2>
-    <input type="text" id="username" placeholder="Username" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <br>
-    <button type="submit">Login</button>
-  </form>
+    <input type="text" id="adminUsername" placeholder="Username">
+    <input type="password" id="adminPassword" placeholder="Password">
+    <button onclick="loginAdmin()">Login</button>
+  </div>
 
-  <!-- ADMIN PANEL -->
-  <div id="adminPanel">
-
+  <div class="admin-container" id="dashboardSection" style="display:none;">
     <h2>Welcome Admin</h2>
 
-    <!-- ADD PRODUCT -->
+    <!-- Add Product Section -->
     <div class="section">
       <h3>Add New Product</h3>
-      <form id="addProductForm">
-        <div class="form-group">
-          <input type="text" id="productName" placeholder="Product Name" required>
-        </div>
-        <div class="form-group">
-          <input type="number" id="productPrice" placeholder="Price" required>
-        </div>
-        <div class="form-group">
-          <textarea id="productDesc" placeholder="Description" rows="3" required></textarea>
-        </div>
-        <div class="form-group">
-          <input type="file" id="productImage" accept="image/*" required>
-        </div>
-        <button type="submit">Add Product</button>
-      </form>
+      <input type="text" id="productName" placeholder="Product Name">
+      <input type="number" id="productPrice" placeholder="Price">
+      <input type="text" id="productDescription" placeholder="Description">
+      <input type="url" id="productImage" placeholder="Image URL">
+      <button onclick="addProduct()">Add Product</button>
     </div>
 
-    <!-- MANAGE PRODUCTS -->
+    <!-- Manage Products Section -->
     <div class="section">
       <h3>Manage Products</h3>
-      <div id="productList"></div>
+      <div id="productsList">
+        <!-- Product cards dynamically added here -->
+      </div>
     </div>
 
-    <!-- MANAGE ORDERS -->
+    <!-- Orders Section -->
     <div class="section">
       <h3>Orders</h3>
-      <div id="orderList"></div>
+      <div id="ordersList">
+        <!-- Orders dynamically added here -->
+      </div>
     </div>
 
-    <button id="logoutBtn" style="margin-top:2rem;">Logout</button>
-
+    <button onclick="logoutAdmin()">Logout</button>
   </div>
 
   <script type="module" src="admin.js"></script>
+
 </body>
 </html>
