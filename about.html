@@ -1,27 +1,49 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>About — MNU Collection</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - MNU Collection</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <nav class="nav">
     <div class="brand">MNU Collection</div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="shop.html">Shop</a></li>
+      <li><a href="cart.html">Cart</a></li>
+      <li><a href="checkout.html">Checkout</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="admin.html" class="btn small">Admin</a></li>
     </ul>
   </nav>
 
-  <main class="container">
-    <h1>About MNU Collection</h1>
-    <p>Luxury, modern designs curated for you.</p>
-  </main>
+  <!-- HERO SECTION -->
+  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1>About Our MNU Collection</h1>
+        <p>Luxurious, Modern, Unique</p>
+      </div>
+    </div>
+  </header>
 
-  <!-- Supabase CDN (keeps global script safe) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-  <script src="script.js"></script>
+  <!-- ABOUT CONTENT -->
+  <section class="container about-content">
+    <p>
+      Welcome to MNU Collection! We provide luxurious, modern, and unique products tailored for our customers.
+      Each product is crafted with care and designed to give a premium experience. Our collection includes exclusive
+      items, with quality and style in mind.
+    </p>
+    <p>
+      You can browse our shop, add items to your cart, and purchase easily with our streamlined checkout process.
+      Our admin manages all products and orders efficiently to ensure smooth operations.
+    </p>
+  </section>
+
 </body>
 </html>
