@@ -1,94 +1,80 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MNU Collection Header</title>
-<style>
-  body {
-    margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f5f5f5; /* minimal background */
-  }
-
-  header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 20px;
-    background-color: #000; /* black theme */
-    color: #fff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-  }
-
-  /* Avatar circle */
-  .avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: #111; /* dark placeholder */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 0 10px rgba(255,255,255,0.5); /* white shadow */
-  }
-
-  .avatar i {
-    color: #fff;
-    font-size: 24px;
-  }
-
-  /* Website name */
-  .site-name {
-    font-family: 'Permanent Marker', cursive; /* handwritten style font */
-    font-size: 24px;
-    color: #00f; /* blue color for luxury feel */
-    flex-grow: 1;
-    text-align: center;
-  }
-
-  /* Search bar */
-  .search-container {
-    position: relative;
-  }
-
-  .search-container input[type="text"] {
-    padding: 5px 30px 5px 10px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-  }
-
-  .search-container i {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #555;
-  }
-</style>
-<!-- Load font from Google Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap" rel="stylesheet">
-<!-- Load Font Awesome for person & search icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MNU Collection</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <nav class="nav">
+    <div class="brand">MNU Collection</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="cart.html">Cart</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><button id="loginBtn" class="btn small">Admin Login</button></li>
+    </ul>
+  </nav>
 
-<header>
-  <!-- Avatar -->
-  <div class="avatar">
-    <i class="fas fa-user"></i>
+  <header class="hero">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1>MNU Collection</h1>
+        <p>Luxury · Modern · Unique</p>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="top-features">
+      <div class="feature">New Arrivals</div>
+      <div class="feature">Limited Drops</div>
+      <div class="feature">Fast Checkout</div>
+    </section>
+
+    <section id="productsPreview" class="products-grid">
+      <!-- Products injected here by script.js -->
+    </section>
+  </main>
+
+  <!-- Admin modal (hidden) -->
+  <div id="adminModal" class="modal hidden">
+    <div class="modal-card">
+      <button id="closeAdmin" class="modal-close">✕</button>
+      <h2>Admin Panel</h2>
+
+      <div id="adminAuth">
+        <label>Username</label>
+        <input id="adminUser" placeholder="username" />
+        <label>Password</label>
+        <input id="adminPass" type="password" placeholder="password" />
+        <button id="adminLogin" class="btn">Login</button>
+      </div>
+
+      <div id="adminControls" class="hidden">
+        <h3>Add Product</h3>
+        <input id="pName" placeholder="Product name" />
+        <input id="pPrice" placeholder="Price" />
+        <textarea id="pDesc" placeholder="Description"></textarea>
+        <input id="pImage" type="file" accept="image/*" />
+        <button id="addProductBtn" class="btn">Upload & Add</button>
+
+        <h3>Manage Products</h3>
+        <div id="adminProductsList"></div>
+
+        <h3>Orders</h3>
+        <div id="adminOrdersList">(Orders appear here)</div>
+
+        <button id="adminLogout" class="btn danger">Logout</button>
+      </div>
+    </div>
   </div>
 
-  <!-- Website Name -->
-  <div class="site-name">MNU Collection</div>
-
-  <!-- Search Bar -->
-  <div class="search-container">
-    <input type="text" placeholder="Search...">
-    <i class="fas fa-magnifying-glass"></i>
-  </div>
-</header>
-
+  <!-- Supabase CDN (required) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
