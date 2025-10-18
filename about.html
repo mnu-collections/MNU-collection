@@ -3,78 +3,72 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - MNU Collection</title>
+  <title>About - MNU Collection</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      padding: 2rem;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      animation: fadeInDown 1s ease forwards;
+    }
+
+    .about-content {
+      max-width: 800px;
+      margin: auto;
+      background: rgba(0,0,0,0.7);
+      padding: 2rem;
+      border-radius: 25px;
+      text-align: center;
+      line-height: 1.6;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    .about-content p {
+      margin-bottom: 1rem;
+    }
+
+    /* Optional: add some subtle animations for paragraphs */
+    .about-content p {
+      animation: fadeIn 1.5s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+  </style>
 </head>
 <body>
 
-  <!-- HERO / BACKGROUND -->
-  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
-    <div class="hero-overlay">
-      <div class="hero-content">
+  <h1>About MNU Collection</h1>
 
-        <!-- LOGIN FORM -->
-        <div class="admin-box" id="loginBox">
-          <h2>Admin Login</h2>
-          <input type="text" id="adminUser" placeholder="Username">
-          <input type="password" id="adminPass" placeholder="Password">
-          <button id="loginBtn" class="btn">Login</button>
-        </div>
+  <div class="about-content">
+    <p><strong>MNU Collection</strong> is a luxurious, modern, and unique brand designed for fashion-forward individuals. Our products combine style, comfort, and quality, ensuring you stand out wherever you go.</p>
 
-        <!-- DASHBOARD -->
-        <div class="admin-box" id="dashboard" style="display:none;">
-          <h2>Welcome Admin</h2>
+    <p>Our collection includes premium T-shirts, hoodies, jackets, and more, each crafted with attention to detail. We are committed to providing an exceptional shopping experience for our customers.</p>
 
-          <!-- ADD PRODUCT -->
-          <div class="add-product">
-            <h3>Add New Product</h3>
-            <input type="text" id="productName" placeholder="Product Name">
-            <input type="number" id="productPrice" placeholder="Price">
-            <textarea id="productDesc" placeholder="Description"></textarea>
-            <input type="file" id="productImage">
-            <button class="btn" id="addProductBtn">Add Product</button>
-          </div>
-
-          <!-- MANAGE PRODUCTS & ORDERS -->
-          <div class="manage">
-            <h3>Manage Products</h3>
-            <div id="productList"></div>
-
-            <h3>Orders</h3>
-            <div id="orderList"></div>
-          </div>
-
-          <button id="logoutBtn" class="btn danger">Logout</button>
-        </div>
-
-      </div>
-    </div>
-  </header>
-
-  <script>
-    // ADMIN LOGIN
-    const loginBox = document.getElementById('loginBox');
-    const dashboard = document.getElementById('dashboard');
-    const loginBtn = document.getElementById('loginBtn');
-    const logoutBtn = document.getElementById('logoutBtn');
-
-    loginBtn.addEventListener('click', ()=>{
-      const username = document.getElementById('adminUser').value;
-      const password = document.getElementById('adminPass').value;
-      // Simple check (replace with Supabase or secure auth later)
-      if(username === 'admin' && password === 'admin123'){
-        loginBox.style.display = 'none';
-        dashboard.style.display = 'block';
-      } else {
-        alert('Invalid credentials');
-      }
-    });
-
-    logoutBtn.addEventListener('click', ()=>{
-      dashboard.style.display = 'none';
-      loginBox.style.display = 'block';
-    });
-  </script>
+    <p>At MNU Collection, we believe in making fashion accessible, trendy, and elegant. Explore our collection and embrace your style!</p>
+  </div>
 
 </body>
 </html>
