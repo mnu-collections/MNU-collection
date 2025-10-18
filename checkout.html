@@ -6,89 +6,147 @@
   <title>Checkout - MNU Collection</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* CHECKOUT PAGE SPECIFIC */
-    .checkout-container {
-      width: 90%;
-      max-width: 500px;
-      margin: 2rem auto;
-      background: rgba(255,255,255,0.05);
-      padding: 2rem;
-      border-radius: 25px;
-      text-align: center;
-      animation: fadeInUp 0.8s ease forwards;
+    body {
+      background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      color: #fff;
+      padding: 0;
     }
 
-    .checkout-container h2 { margin-bottom: 1.5rem; }
+    /* ----------------- MENU ----------------- */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(0,0,0,0.7);
+    }
 
-    .checkout-container input, .checkout-container textarea {
-      width: 100%;
-      padding: 0.7rem;
-      margin: 0.5rem 0;
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffc107;
+    }
+
+    /* ----------------- CHECKOUT FORM ----------------- */
+    .checkout-container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: rgba(0,0,0,0.7);
       border-radius: 25px;
-      border: 1px solid #ccc;
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    .checkout-container h2 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .checkout-container form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .checkout-container input {
+      padding: 0.7rem 1rem;
+      border-radius: 25px;
+      border: none;
       outline: none;
     }
 
     .checkout-container button {
-      margin-top: 1rem;
-      padding: 0.7rem 2rem;
+      padding: 0.7rem 1.5rem;
       border-radius: 25px;
       border: none;
-      cursor: pointer;
       background-color: #ffc107;
+      cursor: pointer;
       transition: all 0.3s ease;
     }
 
     .checkout-container button:hover {
-      transform: scale(1.05);
       background-color: #ffdd57;
+      transform: scale(1.05);
+    }
+
+    /* ----------------- ANIMATION ----------------- */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="nav">
-    <div class="brand">MNU Collection</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="cart.html">Cart</a></li>
-      <li><a href="checkout.html">Checkout</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="admin.html" class="btn small">Admin</a></li>
-    </ul>
+  <!-- ----------------- MENU ----------------- -->
+  <nav>
+    <div class="logo"><a href="index.html">MNU Collection</a></div>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html">Cart</a>
+      <a href="admin.html">Admin</a>
+    </div>
   </nav>
 
-  <!-- HERO SECTION -->
-  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
-    <div class="hero-overlay">
-      <div class="hero-content">
-        <h1>Checkout</h1>
-      </div>
-    </div>
-  </header>
+  <!-- ----------------- CHECKOUT FORM ----------------- -->
+  <div class="checkout-container">
+    <h2>Checkout</h2>
+    <form id="checkoutForm">
+      <input type="text" id="name" placeholder="Full Name" required>
+      <input type="email" id="email" placeholder="Email" required>
+      <input type="tel" id="phone" placeholder="Phone Number" required>
+      <input type="text" id="street" placeholder="Street" required>
+      <input type="text" id="landmark" placeholder="Landmark" required>
+      <input type="text" id="city" placeholder="City" required>
+      <input type="text" id="pincode" placeholder="Pincode" required>
+      <button type="submit">Place Order</button>
+    </form>
+  </div>
 
-  <!-- CHECKOUT FORM -->
-  <section class="checkout-container">
-    <h2>Shipping Details</h2>
-    <input type="text" id="fullName" placeholder="Full Name" required>
-    <input type="tel" id="phone" placeholder="Phone Number" required>
-    <input type="email" id="email" placeholder="Email Address" required>
-    <input type="text" id="address" placeholder="Address" required>
-    <input type="text" id="street" placeholder="Street" required>
-    <input type="text" id="landmark" placeholder="Landmark" required>
-    <input type="text" id="city" placeholder="City" required>
-    <input type="text" id="pincode" placeholder="Pincode" required>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    <button id="placeOrderBtn">Place Order</button>
-  </section>
+    const supabaseUrl = 'https://adxtanejeewibwmsxgae.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkeHRhbmVqZWV3aWJ3bXN4Z2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjYyMzIsImV4cCI6MjA3NjIwMjIzMn0.qSzNYPrUFOG90-SRQmOT1MTWaELO_At8diBZiwzgCgU';
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-  <script>
-    document.getElementById('placeOrderBtn').addEventListener('click', ()=>{
-      alert('Order placed successfully!');
-      document.querySelector('.checkout-container').reset();
+    const checkoutForm = document.getElementById('checkoutForm');
+
+    checkoutForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const order = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        street: document.getElementById('street').value,
+        landmark: document.getElementById('landmark').value,
+        city: document.getElementById('city').value,
+        pincode: document.getElementById('pincode').value,
+        status: 'Pending'
+      };
+
+      const { data, error } = await supabase.from('orders').insert([order]);
+
+      if (error) {
+        alert('Error placing order: ' + error.message);
+      } else {
+        alert('Order placed successfully!');
+        checkoutForm.reset();
+        window.location.href = 'index.html';
+      }
     });
   </script>
 
