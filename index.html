@@ -3,86 +3,188 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MNU Collection</title>
+  <title>MNU Collection - Home</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* INDEX PAGE SPECIFIC */
-    .hero-overlay { 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: center; 
-      align-items: center; 
-      min-height: 100vh; 
-      text-align: center; 
+    body {
+      background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      color: #fff;
+      padding: 0;
     }
 
-    .hero-overlay h1 {
-      font-size: 3rem; 
-      color: #fff; 
-      margin-bottom: 1.5rem; 
+    /* ----------------- MENU ----------------- */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: rgba(0,0,0,0.7);
+    }
+
+    nav a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 1rem;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #ffc107;
+    }
+
+    /* ----------------- HERO ----------------- */
+    .hero {
+      text-align: center;
+      padding: 5rem 2rem;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 2rem;
       animation: fadeInDown 1s ease forwards;
     }
 
-    .search-bar {
-      display: flex;
-      width: 100%;
-      max-width: 500px;
-      border-radius: 50px;
-      overflow: hidden;
-      box-shadow: 0 0 15px rgba(0,0,0,0.5);
-      animation: fadeInUp 1s ease forwards;
-    }
-
+    /* ----------------- SEARCH ----------------- */
     .search-bar input {
-      flex: 1;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 1rem;
+      border-radius: 25px;
       border: none;
+      width: 300px;
       outline: none;
-      border-radius: 50px 0 0 50px;
-      font-size: 1rem;
     }
 
     .search-bar button {
-      padding: 0.8rem 1.5rem;
+      padding: 0.7rem 1.5rem;
+      border-radius: 25px;
       border: none;
       background-color: #ffc107;
       cursor: pointer;
       transition: all 0.3s ease;
-      border-radius: 0 50px 50px 0;
     }
 
     .search-bar button:hover {
-      transform: scale(1.05);
       background-color: #ffdd57;
+      transform: scale(1.05);
+    }
+
+    /* ----------------- FEATURED PRODUCTS ----------------- */
+    .products-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    .product-card {
+      background: rgba(0,0,0,0.7);
+      padding: 1rem;
+      border-radius: 25px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .product-card img {
+      width: 100%;
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+    }
+
+    .product-card img:hover {
+      transform: scale(1.05);
+    }
+
+    .product-card button {
+      margin-top: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      border: none;
+      cursor: pointer;
+      background-color: #ffc107;
+      transition: all 0.3s ease;
+    }
+
+    .product-card button:hover {
+      background-color: #ffdd57;
+      transform: scale(1.05);
+    }
+
+    /* ----------------- ANIMATIONS ----------------- */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="nav">
-    <div class="brand">MNU Collection</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="cart.html">Cart</a></li>
-      <li><a href="checkout.html">Checkout</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="admin.html" class="btn small">Admin</a></li>
-    </ul>
+  <!-- ----------------- MENU ----------------- -->
+  <nav>
+    <div class="logo"><a href="index.html">MNU Collection</a></div>
+    <div class="menu">
+      <a href="index.html">Home</a>
+      <a href="shop.html">Shop</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+      <a href="cart.html">Cart</a>
+      <a href="admin.html">Admin</a>
+    </div>
   </nav>
 
-  <!-- HERO / BACKGROUND -->
-  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
-    <div class="hero-overlay">
-      <h1>MNU Collection</h1>
-      <div class="search-bar">
-        <input type="text" placeholder="MNU Collection">
-        <button>Search</button>
-      </div>
+  <!-- ----------------- HERO ----------------- -->
+  <div class="hero">
+    <h1>Welcome to MNU Collection</h1>
+    <div class="search-bar">
+      <input type="text" id="homeSearch" placeholder="MNU Collection">
+      <button onclick="searchProducts()">Search</button>
     </div>
-  </header>
+  </div>
 
+  <!-- ----------------- FEATURED PRODUCTS ----------------- -->
+  <div class="products-container" id="featuredProducts">
+    <!-- Products will be loaded dynamically -->
+  </div>
+
+  <script type="module" src="script.js"></script>
+  <script>
+    const featuredProducts = document.getElementById('featuredProducts');
+
+    const products = [
+      { name: 'Luxury T-Shirt', price: '999', description: 'Modern and stylish', image: 'https://via.placeholder.com/250' },
+      { name: 'Modern Hoodie', price: '1999', description: 'Comfortable and trendy', image: 'https://via.placeholder.com/250' },
+      { name: 'Classic Jacket', price: '2999', description: 'Unique and luxurious', image: 'https://via.placeholder.com/250' }
+    ];
+
+    function displayProducts(items) {
+      featuredProducts.innerHTML = '';
+      items.forEach(product => {
+        const div = document.createElement('div');
+        div.classList.add('product-card');
+        div.innerHTML = `
+          <img src="${product.image}" alt="${product.name}">
+          <h3>${product.name}</h3>
+          <p>₹${product.price}</p>
+          <p>${product.description}</p>
+          <button class="addCartBtn">Add to Cart</button>
+          <button class="buyNowBtn">Buy Now</button>
+        `;
+        featuredProducts.appendChild(div);
+      });
+    }
+
+    displayProducts(products);
+
+    function searchProducts() {
+      const query = document.getElementById('homeSearch').value.toLowerCase();
+      const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+      displayProducts(filtered);
+    }
+  </script>
 </body>
 </html>
