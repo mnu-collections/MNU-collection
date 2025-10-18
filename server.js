@@ -1,137 +1,82 @@
-/* General */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+// ---------------------- IMPORT SUPABASE ----------------------
+import { createClient } from '@supabase/supabase-js'
+
+// Supabase credentials (hardcoded for now)
+const supabaseUrl = 'https://adxtanejeewibwmsxgae.supabase.co';
+const supabaseKey = 'YOUR_SUPABASE_API_KEY';
+const supabase = createClient(supabaseUrl, supabaseKey);
+
+// ---------------------- PRODUCTS ----------------------
+// Add product
+export async function addProduct(product) {
+  const { data, error } = await supabase
+    .from('products')
+    .insert([product]);
+  if(error) {
+    console.error('Add product error:', error);
+    return null;
+  }
+  return data;
 }
 
-body {
-    background-color: #000;
-    color: #fff;
+// Get all products
+export async function getProducts() {
+  const { data, error } = await supabase
+    .from('products')
+    .select('*');
+  if(error) {
+    console.error('Get products error:', error);
+    return [];
+  }
+  return data;
 }
 
-/* Header */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px 50px;
-    background-color: #000;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+// Remove product by id
+export async function removeProduct(id) {
+  const { data, error } = await supabase
+    .from('products')
+    .delete()
+    .eq('id', id);
+  if(error) {
+    console.error('Remove product error:', error);
+    return null;
+  }
+  return data;
 }
 
-.logo {
-    font-size: 28px;
-    font-weight: 700;
+// ---------------------- ORDERS ----------------------
+// Add order
+export async function addOrder(order) {
+  const { data, error } = await supabase
+    .from('orders')
+    .insert([order]);
+  if(error) {
+    console.error('Add order error:', error);
+    return null;
+  }
+  return data;
 }
 
-nav ul {
-    display: flex;
-    list-style: none;
+// Get all orders
+export async function getOrders() {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*');
+  if(error) {
+    console.error('Get orders error:', error);
+    return [];
+  }
+  return data;
 }
 
-nav ul li {
-    margin-left: 30px;
-}
+// ---------------------- EXAMPLE USAGE ----------------------
+// (Uncomment to test independently)
+// const testProduct = {
+//   name: 'Test T-Shirt',
+//   price: '999',
+//   description: 'Stylish test product',
+//   image: 'https://via.placeholder.com/250'
+// };
 
-nav ul li a {
-    text-decoration: none;
-    color: #fff;
-    font-weight: 500;
-    transition: color 0.3s;
-}
-
-nav ul li a:hover {
-    color: #f5c518;
-}
-
-/* Hero Section */
-.hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 100px 50px;
-    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('hero.jpg') no-repeat center center/cover;
-}
-
-.hero-text h1 {
-    font-size: 50px;
-    margin-bottom: 20px;
-}
-
-.hero-text p {
-    font-size: 18px;
-    margin-bottom: 30px;
-}
-
-.btn {
-    background-color: #f5c518;
-    color: #000;
-    padding: 12px 25px;
-    text-decoration: none;
-    font-weight: 700;
-    border-radius: 5px;
-    transition: background 0.3s;
-}
-
-.btn:hover {
-    background-color: #fff;
-}
-
-/* Featured Products */
-.featured-products {
-    padding: 80px 50px;
-    text-align: center;
-}
-
-.featured-products h2 {
-    font-size: 36px;
-    margin-bottom: 50px;
-}
-
-.products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 30px;
-}
-
-.product-card {
-    background-color: #111;
-    padding: 20px;
-    border-radius: 10px;
-    transition: transform 0.3s;
-}
-
-.product-card img {
-    width: 100%;
-    border-radius: 10px;
-    margin-bottom: 15px;
-}
-
-.product-card h3 {
-    margin-bottom: 10px;
-}
-
-.product-card p {
-    margin-bottom: 15px;
-}
-
-.product-card .btn {
-    display: inline-block;
-}
-
-/* Hover effect */
-.product-card:hover {
-    transform: translateY(-10px);
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 30px;
-    background-color: #000;
-    border-top: 1px solid #333;
-}
+// addProduct(testProduct).then(res => console.log('Product added:', res));
+// getProducts().then(res => console.log('All products:', res));
