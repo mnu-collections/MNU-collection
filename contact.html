@@ -1,27 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact — MNU Collection</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - MNU Collection</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <nav class="nav">
     <div class="brand">MNU Collection</div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="shop.html">Shop</a></li>
+      <li><a href="cart.html">Cart</a></li>
+      <li><a href="checkout.html">Checkout</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="admin.html" class="btn small">Admin</a></li>
     </ul>
   </nav>
 
-  <main class="container">
-    <h1>Contact</h1>
-    <p>Email: youremail@example.com</p>
-  </main>
+  <!-- HERO SECTION -->
+  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1>Contact Us</h1>
+        <p>We are here to assist you</p>
+      </div>
+    </div>
+  </header>
 
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-  <script src="script.js"></script>
+  <!-- CONTACT FORM -->
+  <section class="container contact-form">
+    <form id="contactForm">
+      <input type="text" id="contactName" placeholder="Full Name" required>
+      <input type="email" id="contactEmail" placeholder="Email Address" required>
+      <textarea id="contactMessage" placeholder="Your Message" required></textarea>
+      <button type="submit" class="btn">Send Message</button>
+    </form>
+  </section>
+
+  <!-- FORM SUBMISSION -->
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', (e)=>{
+      e.preventDefault();
+      alert('Thank you! Your message has been sent.');
+      document.getElementById('contactForm').reset();
+    });
+  </script>
+
 </body>
 </html>
