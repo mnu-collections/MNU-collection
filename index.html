@@ -1,80 +1,79 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MNU Collection</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <nav class="nav">
     <div class="brand">MNU Collection</div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="shop.html">Shop</a></li>
       <li><a href="cart.html">Cart</a></li>
+      <li><a href="checkout.html">Checkout</a></li>
       <li><a href="about.html">About</a></li>
       <li><a href="contact.html">Contact</a></li>
-      <li><button id="loginBtn" class="btn small">Admin Login</button></li>
+      <li><a href="admin.html" class="btn small">Admin</a></li>
     </ul>
   </nav>
 
-  <header class="hero">
+  <!-- HERO SECTION -->
+  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
     <div class="hero-overlay">
       <div class="hero-content">
         <h1>MNU Collection</h1>
-        <p>Luxury · Modern · Unique</p>
+        <p>Luxurious, Modern, Unique</p>
       </div>
     </div>
   </header>
 
-  <main class="container">
-    <section class="top-features">
-      <div class="feature">New Arrivals</div>
-      <div class="feature">Limited Drops</div>
-      <div class="feature">Fast Checkout</div>
-    </section>
+  <!-- MAIN CONTENT -->
+  <section class="container">
+    <h2>Welcome to MNU Collection</h2>
+    <p>Explore our exclusive products below</p>
 
-    <section id="productsPreview" class="products-grid">
-      <!-- Products injected here by script.js -->
-    </section>
-  </main>
-
-  <!-- Admin modal (hidden) -->
-  <div id="adminModal" class="modal hidden">
-    <div class="modal-card">
-      <button id="closeAdmin" class="modal-close">✕</button>
-      <h2>Admin Panel</h2>
-
-      <div id="adminAuth">
-        <label>Username</label>
-        <input id="adminUser" placeholder="username" />
-        <label>Password</label>
-        <input id="adminPass" type="password" placeholder="password" />
-        <button id="adminLogin" class="btn">Login</button>
-      </div>
-
-      <div id="adminControls" class="hidden">
-        <h3>Add Product</h3>
-        <input id="pName" placeholder="Product name" />
-        <input id="pPrice" placeholder="Price" />
-        <textarea id="pDesc" placeholder="Description"></textarea>
-        <input id="pImage" type="file" accept="image/*" />
-        <button id="addProductBtn" class="btn">Upload & Add</button>
-
-        <h3>Manage Products</h3>
-        <div id="adminProductsList"></div>
-
-        <h3>Orders</h3>
-        <div id="adminOrdersList">(Orders appear here)</div>
-
-        <button id="adminLogout" class="btn danger">Logout</button>
-      </div>
+    <div class="products-grid" id="homeProducts">
+      <!-- Product cards will be loaded here -->
     </div>
-  </div>
+  </section>
 
-  <!-- Supabase CDN (required) -->
+  <!-- SUPABASE CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-  <script src="script.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://adxtanejeewibwmsxgae.supabase.co';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // replace with your key
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadProducts(){
+      const { data, error } = await supabase.from('products').select('*').order('id',{ascending:false});
+      if(error) return console.error(error);
+
+      const container = document.getElementById('homeProducts');
+      container.innerHTML = '';
+      data.forEach(p=>{
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${p.image_url}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>₹${p.price}</p>
+          <p>${p.description}</p>
+          <div class="product-actions">
+            <button class="btn small">Add to Cart</button>
+            <button class="btn small">Buy Now</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    loadProducts();
+  </script>
+
 </body>
 </html>
