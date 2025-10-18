@@ -1,122 +1,28 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MNU Collection - Shop</title>
-<link rel="stylesheet" href="style.css">
-<style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background-color: black;
-  color: white;
-  background-image: url('https://images.pexels.com/photos/1662298/pexels-photo-1662298.jpeg');
-  background-size: cover;
-  background-position: center;
-}
-.overlay { background: rgba(0,0,0,0.75); min-height: 100vh; }
-header { text-align:center; padding:20px; background: rgba(0,0,0,0.8); }
-nav { display:flex; justify-content:center; gap:20px; margin-top:10px; }
-nav a { color:white; text-decoration:none; font-weight:bold; }
-.products { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:20px; padding:20px; }
-.product-card { background: rgba(255,255,255,0.1); border-radius:10px; padding:10px; text-align:center; transition:0.3s; }
-.product-card:hover { transform: scale(1.05); background: rgba(255,255,255,0.2); }
-.product-card img { width:100%; border-radius:10px; }
-.product-card button { margin:5px 5px 0 5px; padding:8px 20px; border:none; border-radius:5px; cursor:pointer; }
-.add-to-cart { background-color: #28a745; color:white; }
-.add-to-cart:hover { background-color:#218838; }
-.buy-now { background-color:#ff4500; color:white; }
-.buy-now:hover { background-color:#e03e00; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shop — MNU Collection</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="overlay">
-<header>
-  <h1>MNU Collection - Shop</h1>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="admin.html">Admin</a>
-    <a href="cart.html">Cart (<span id="cart-count">0</span>)</a>
+  <nav class="nav">
+    <div class="brand">MNU Collection</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="cart.html">Cart</a></li>
+    </ul>
   </nav>
-</header>
 
-<section class="products" id="products">
-  <!-- Products from Firebase will load here -->
-</section>
-</div>
+  <main class="container">
+    <h1>Shop</h1>
+    <section id="shopProducts" class="products-grid"></section>
+  </main>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, child, get } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
-
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyCQwYdtbUSM7WM25eNUzN4NxFXEvvRGN1k",
-  authDomain: "mnu-collection-9282f.firebaseapp.com",
-  databaseURL: "https://mnu-collection-9282f-default-rtdb.firebaseio.com",
-  projectId: "mnu-collection-9282f",
-  storageBucket: "mnu-collection-9282f.firebasestorage.app",
-  messagingSenderId: "88757917123",
-  appId: "1:88757917123:web:3b1f8f53654fee25089976"
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-const productsDiv = document.getElementById('products');
-const cartCount = document.getElementById('cart-count');
-
-// Temporary user ID
-let userId = localStorage.getItem('tempUserId');
-if(!userId){
-  userId = 'user_' + Date.now();
-  localStorage.setItem('tempUserId', userId);
-}
-let cart = [];
-
-// Load cart
-async function loadCart(){
-  const snapshot = await get(child(ref(db), 'carts/' + userId));
-  cart = snapshot.exists() ? snapshot.val() : [];
-  cartCount.textContent = cart.length;
-}
-loadCart();
-
-// Load products from Firebase
-const productsRef = ref(db, 'products/');
-onValue(productsRef, snapshot=>{
-  productsDiv.innerHTML = '';
-  snapshot.forEach(childSnap=>{
-    const p = childSnap.val();
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = `
-      <img src="${p.image}" alt="${p.name}">
-      <h3>${p.name}</h3>
-      <p>₹${p.price}</p>
-      <button class="add-to-cart">Add to Cart</button>
-      <button class="buy-now">Buy Now</button>
-    `;
-    productsDiv.appendChild(card);
-
-    // Add to Cart
-    card.querySelector('.add-to-cart').addEventListener('click', async ()=>{
-      const index = cart.findIndex(item=>item.name===p.name);
-      if(index!==-1){ cart[index].quantity+=1; } else { cart.push({...p, quantity:1}); }
-      await set(ref(db, 'carts/' + userId), cart);
-      cartCount.textContent = cart.length;
-      alert(p.name + " added to cart!");
-    });
-
-    // Buy Now
-    card.querySelector('.buy-now').addEventListener('click', async ()=>{
-      cart = [{...p, quantity:1}];
-      await set(ref(db, 'carts/' + userId), cart);
-      window.location.href = 'cart.html';
-    });
-  });
-});
-</script>
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
