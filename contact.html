@@ -1,99 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact - MNU Collection</title>
-<link rel="stylesheet" href="style.css">
-<style>
-  body {
-    background-color: black;
-    background-image: url('https://images.pexels.com/photos/1662298/pexels-photo-1662298.jpeg');
-    background-size: cover;
-    background-position: center;
-    color: white;
-    font-family: Arial, sans-serif;
-    margin: 0;
-  }
-  .overlay {
-    background: rgba(0,0,0,0.75);
-    min-height: 100vh;
-    padding: 20px;
-  }
-  h1 { text-align: center; }
-  form {
-    max-width: 500px;
-    margin: auto;
-    background: rgba(255,255,255,0.1);
-    padding: 20px;
-    border-radius: 10px;
-  }
-  form input, form textarea {
-    width: 100%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 6px;
-    border: 1px solid #fff;
-    background: rgba(0,0,0,0.5);
-    color: white;
-  }
-  form button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 6px;
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-  }
-  form button:hover { background-color: #218838; }
-  footer { text-align: center; padding: 20px; background: rgba(0,0,0,0.8); margin-top: 20px; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact — MNU Collection</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="overlay">
-  <h1>Contact Us</h1>
-  <form id="contactForm">
-    <input type="text" id="name" placeholder="Full Name" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="tel" id="phone" placeholder="Phone Number" required>
-    <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
-    <button type="submit">Send Message</button>
-  </form>
+  <nav class="nav">
+    <div class="brand">MNU Collection</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+    </ul>
+  </nav>
 
-  <footer>
-    &copy; 2025 MNU Collection. All rights reserved.
-  </footer>
-</div>
+  <main class="container">
+    <h1>Contact</h1>
+    <p>Email: youremail@example.com</p>
+  </main>
 
-<script type="module">
-import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
-
-const db = getDatabase();
-const contactForm = document.getElementById('contactForm');
-
-contactForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const phone = document.getElementById('phone').value;
-  const message = document.getElementById('message').value;
-
-  const messagesRef = ref(db, 'messages');
-  push(messagesRef, {
-    name,
-    email,
-    phone,
-    message,
-    time: new Date().toLocaleString()
-  });
-
-  alert("Message sent successfully!");
-  contactForm.reset();
-});
-</script>
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
