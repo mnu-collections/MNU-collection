@@ -1,150 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About | MNU Collection</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About — MNU Collection</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    body {
-      background-color: black;
-      background-image: url('https://images.pexels.com/photos/1662298/pexels-photo-1662298.jpeg');
-      background-size: cover;
-      background-position: center;
-      color: white;
-      font-family: 'Poppins', sans-serif;
-      margin: 0;
-    }
-
-    .overlay {
-      background: rgba(0, 0, 0, 0.8);
-      min-height: 100vh;
-      padding-bottom: 40px;
-      animation: fadeIn 1s ease-in-out;
-    }
-
-    header {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-    }
-
-    nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    nav a:hover {
-      color: #ff4500;
-      transform: scale(1.1);
-    }
-
-    .about-container {
-      text-align: center;
-      max-width: 800px;
-      margin: 80px auto 0 auto;
-      padding: 20px;
-      animation: slideUp 1.5s ease;
-    }
-
-    .about-container h1 {
-      font-size: 3em;
-      color: #ff4500;
-      margin-bottom: 20px;
-    }
-
-    .about-container p {
-      font-size: 1.1em;
-      line-height: 1.8;
-      color: #f5f5f5;
-      margin-bottom: 20px;
-    }
-
-    footer {
-      text-align: center;
-      padding: 20px;
-      background: rgba(0, 0, 0, 0.9);
-      margin-top: 50px;
-      font-size: 0.9em;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-
-    @keyframes slideUp {
-      from { transform: translateY(50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-  </style>
 </head>
 <body>
-  <div class="overlay">
-    <header>
-      <h1>MNU Collection</h1>
-      <nav>
-        <a href="index.html">Home</a>
-        <a href="shop.html">Shop</a>
-        <a href="about.html">About</a>
-        <a href="login.html">Login</a>
-        <a href="cart.html">Cart</a>
-      </nav>
-    </header>
+  <nav class="nav">
+    <div class="brand">MNU Collection</div>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+    </ul>
+  </nav>
 
-    <section class="about-container">
-      <h1>About MNU Collection</h1>
-      <p>
-        Welcome to <strong>MNU Collection</strong> — where luxury meets modern streetwear.
-        We craft premium-quality clothing designed for comfort, style, and confidence.
-      </p>
-      <p>
-        Founded with a vision to redefine fashion, MNU Collection brings you exclusive designs that
-        blend boldness and simplicity. Our team is constantly working to deliver the best — from fabric
-        to final detail.
-      </p>
-      <p id="about-text"></p>
-    </section>
+  <main class="container">
+    <h1>About MNU Collection</h1>
+    <p>Luxury, modern designs curated for you.</p>
+  </main>
 
-    <footer>
-      &copy; 2025 MNU Collection. All Rights Reserved.
-    </footer>
-  </div>
-
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/12.3.0/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDc4ls9aivGG4dqOalisJMFXH2SchTQ7ag",
-      authDomain: "mnu-collection.firebaseapp.com",
-      databaseURL: "https://mnu-collection-default-rtdb.firebaseio.com",
-      projectId: "mnu-collection",
-      storageBucket: "mnu-collection.firebasestorage.app",
-      messagingSenderId: "700765426311",
-      appId: "1:700765426311:web:2a018c06ecd807c7989e22",
-      measurementId: "G-117FQDJVH6"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Fetch about text dynamically (optional)
-    const aboutRef = ref(db, "about/text");
-    onValue(aboutRef, (snapshot) => {
-      const text = snapshot.val();
-      if (text) document.getElementById("about-text").textContent = text;
-    });
-  </script>
+  <!-- Supabase CDN (keeps global script safe) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
