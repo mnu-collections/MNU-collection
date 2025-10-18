@@ -1,201 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Shop - MNU Collection</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    body {
-      background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;
-      min-height: 100vh;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      color: #fff;
-      padding: 0;
-    }
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
 
-    /* ----------------- MENU ----------------- */
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 2rem;
-      background: rgba(0,0,0,0.7);
-    }
+const supabaseUrl = 'https://adxtanejeewibwmsxgae.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkeHRhbmVqZWV3aWJ3bXN4Z2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjYyMzIsImV4cCI6MjA3NjIwMjIzMn0.qSzNYPrUFOG90-SRQmOT1MTWaELO_At8diBZiwzgCgU';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-    nav a {
-      color: #fff;
-      text-decoration: none;
-      margin: 0 1rem;
-      font-weight: bold;
-      transition: all 0.3s ease;
-    }
+const loginSection = document.getElementById('loginSection');
+const dashboardSection = document.getElementById('dashboardSection');
 
-    nav a:hover {
-      color: #ffc107;
-    }
+const ADMIN_USERNAME = 'admin';
+const ADMIN_PASSWORD = 'admin123';
 
-    /* ----------------- SEARCH ----------------- */
-    .search-bar {
-      text-align: center;
-      margin: 2rem 0;
-    }
+function loginAdmin() {
+  const username = document.getElementById('adminUsername').value;
+  const password = document.getElementById('adminPassword').value;
 
-    .search-bar input {
-      padding: 0.7rem 1rem;
-      border-radius: 25px;
-      border: none;
-      width: 300px;
-      outline: none;
-    }
-
-    .search-bar button {
-      padding: 0.7rem 1.5rem;
-      border-radius: 25px;
-      border: none;
-      background-color: #ffc107;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .search-bar button:hover {
-      background-color: #ffdd57;
-      transform: scale(1.05);
-    }
-
-    /* ----------------- PRODUCTS ----------------- */
-    .products-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-      max-width: 1200px;
-      margin: auto;
-      padding: 0 2rem;
-    }
-
-    .product-card {
-      background: rgba(0,0,0,0.7);
-      padding: 1rem;
-      border-radius: 25px;
-      text-align: center;
-      transition: all 0.3s ease;
-    }
-
-    .product-card img {
-      width: 100%;
-      border-radius: 15px;
-      margin-bottom: 1rem;
-      transition: transform 0.3s ease;
-    }
-
-    .product-card img:hover {
-      transform: scale(1.05);
-    }
-
-    .product-card button {
-      margin-top: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-radius: 25px;
-      border: none;
-      cursor: pointer;
-      background-color: #ffc107;
-      transition: all 0.3s ease;
-    }
-
-    .product-card button:hover {
-      background-color: #ffdd57;
-      transform: scale(1.05);
-    }
-
-    /* ----------------- ANIMATION ----------------- */
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
-</head>
-<body>
-
-  <!-- ----------------- MENU ----------------- -->
-  <nav>
-    <div class="logo"><a href="index.html">MNU Collection</a></div>
-    <div class="menu">
-      <a href="index.html">Home</a>
-      <a href="shop.html">Shop</a>
-      <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
-      <a href="cart.html">Cart</a>
-      <a href="admin.html">Admin</a>
-    </div>
-  </nav>
-
-  <!-- ----------------- SEARCH ----------------- -->
-  <div class="search-bar">
-    <input type="text" id="shopSearch" placeholder="MNU Collection">
-    <button onclick="searchProducts()">Search</button>
-  </div>
-
-  <!-- ----------------- PRODUCTS ----------------- -->
-  <div class="products-container" id="shopProducts">
-    <!-- Products will be dynamically loaded from Supabase -->
-  </div>
-
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
-
-    const supabaseUrl = 'https://adxtanejeewibwmsxgae.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkeHRhbmVqZWV3aWJ3bXN4Z2FlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA2MjYyMzIsImV4cCI6MjA3NjIwMjIzMn0.qSzNYPrUFOG90-SRQmOT1MTWaELO_At8diBZiwzgCgU';
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    const shopProducts = document.getElementById('shopProducts');
-
-    async function loadProducts() {
-      let { data: products, error } = await supabase.from('products').select('*');
-      if (error) {
-        console.error('Error fetching products:', error);
-        return;
-      }
-      displayProducts(products);
-    }
-
-    function displayProducts(items) {
-      shopProducts.innerHTML = '';
-      items.forEach(product => {
-        const div = document.createElement('div');
-        div.classList.add('product-card');
-        div.innerHTML = `
-          <img src="${product.image_url}" alt="${product.name}">
-          <h3>${product.name}</h3>
-          <p>₹${product.price}</p>
-          <p>${product.description}</p>
-          <button onclick="addToCart('${product.id}')">Add to Cart</button>
-          <button onclick="buyNow('${product.id}')">Buy Now</button>
-        `;
-        shopProducts.appendChild(div);
-      });
-    }
-
-    function searchProducts() {
-      const query = document.getElementById('shopSearch').value.toLowerCase();
-      const filtered = Array.from(shopProducts.children).filter(card => 
-        card.querySelector('h3').textContent.toLowerCase().includes(query)
-      );
-      shopProducts.innerHTML = '';
-      filtered.forEach(card => shopProducts.appendChild(card));
-    }
-
-    function addToCart(productId) {
-      alert('Added to cart: ' + productId);
-      // You will replace with real cart logic later
-    }
-
-    function buyNow(productId) {
-      alert('Buying now: ' + productId);
-      // You will replace with real checkout logic later
-    }
-
+  if(username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    loginSection.style.display = 'none';
+    dashboardSection.style.display = 'block';
     loadProducts();
-  </script>
-</body>
-</html>
+    loadOrders();
+  } else {
+    alert('Invalid username or password!');
+  }
+}
+
+function logoutAdmin() {
+  loginSection.style.display = 'block';
+  dashboardSection.style.display = 'none';
+}
+
+// ----------------- PRODUCTS -----------------
+const productsList = document.getElementById('productsList');
+
+async function loadProducts() {
+  const { data: products, error } = await supabase.from('products').select('*');
+  if(error) return console.error(error);
+
+  productsList.innerHTML = '';
+  products.forEach(product => {
+    const div = document.createElement('div');
+    div.classList.add('product-card');
+    div.innerHTML = `
+      <img src="${product.image_url}" alt="${product.name}">
+      <div>
+        <strong>${product.name}</strong> - ₹${product.price}<br>
+        ${product.description}
+      </div>
+      <button onclick="deleteProduct('${product.id}')">Delete</button>
+    `;
+    productsList.appendChild(div);
+  });
+}
+
+async function addProduct() {
+  const name = document.getElementById('productName').value;
+  const price = document.getElementById('productPrice').value;
+  const description = document.getElementById('productDescription').value;
+  const image_url = document.getElementById('productImage').value;
+
+  const { data, error } = await supabase.from('products').insert([{ name, price, description, image_url }]);
+  if(error) return alert('Error adding product: ' + error.message);
+
+  alert('Product added!');
+  document.getElementById('productName').value = '';
+  document.getElementById('productPrice').value = '';
+  document.getElementById('productDescription').value = '';
+  document.getElementById('productImage').value = '';
+  loadProducts();
+}
+
+async function deleteProduct(id) {
+  const { error } = await supabase.from('products').delete().eq('id', id);
+  if(error) return alert('Error deleting product: ' + error.message);
+  loadProducts();
+}
+
+// ----------------- ORDERS -----------------
+const ordersList = document.getElementById('ordersList');
+
+async function loadOrders() {
+  const { data: orders, error } = await supabase.from('orders').select('*');
+  if(error) return console.error(error);
+
+  ordersList.innerHTML = '';
+  orders.forEach(order => {
+    const div = document.createElement('div');
+    div.classList.add('order-card');
+    div.innerHTML = `
+      <div>
+        <strong>${order.name}</strong> - ${order.email}<br>
+        ${order.phone}, ${order.street}, ${order.landmark}, ${order.city} - ${order.pincode}<br>
+        Status: ${order.status}
+      </div>
+      <button onclick="updateOrderStatus('${order.id}')">Mark as Completed</button>
+    `;
+    ordersList.appendChild(div);
+  });
+}
+
+async function updateOrderStatus(id) {
+  const { error } = await supabase.from('orders').update({ status: 'Completed' }).eq('id', id);
+  if(error) return alert('Error updating status: ' + error.message);
+  loadOrders();
+}
