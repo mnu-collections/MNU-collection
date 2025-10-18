@@ -1,28 +1,76 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Shop — MNU Collection</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop - MNU Collection</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+
+  <!-- NAVBAR -->
   <nav class="nav">
     <div class="brand">MNU Collection</div>
     <ul class="nav-links">
       <li><a href="index.html">Home</a></li>
       <li><a href="shop.html">Shop</a></li>
       <li><a href="cart.html">Cart</a></li>
+      <li><a href="checkout.html">Checkout</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="admin.html" class="btn small">Admin</a></li>
     </ul>
   </nav>
 
-  <main class="container">
-    <h1>Shop</h1>
-    <section id="shopProducts" class="products-grid"></section>
-  </main>
+  <!-- HERO SECTION -->
+  <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
+    <div class="hero-overlay">
+      <div class="hero-content">
+        <h1>Our Products</h1>
+        <p>Explore the exclusive MNU Collection</p>
+      </div>
+    </div>
+  </header>
 
-  <!-- Supabase CDN -->
+  <!-- PRODUCTS GRID -->
+  <section class="container">
+    <div class="products-grid" id="shopProducts">
+      <!-- Products will be loaded here -->
+    </div>
+  </section>
+
+  <!-- SUPABASE CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.min.js"></script>
-  <script src="script.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://adxtanejeewibwmsxgae.supabase.co';
+    const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // replace with your key
+    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function loadProducts(){
+      const { data, error } = await supabase.from('products').select('*').order('id',{ascending:false});
+      if(error) return console.error(error);
+
+      const container = document.getElementById('shopProducts');
+      container.innerHTML = '';
+      data.forEach(p=>{
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+          <img src="${p.image_url}" alt="${p.name}">
+          <h3>${p.name}</h3>
+          <p>₹${p.price}</p>
+          <p>${p.description}</p>
+          <div class="product-actions">
+            <button class="btn small">Add to Cart</button>
+            <button class="btn small">Buy Now</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    loadProducts();
+  </script>
+
 </body>
 </html>
