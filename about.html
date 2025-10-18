@@ -3,47 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About - MNU Collection</title>
+  <title>Admin - MNU Collection</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="nav">
-    <div class="brand">MNU Collection</div>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="shop.html">Shop</a></li>
-      <li><a href="cart.html">Cart</a></li>
-      <li><a href="checkout.html">Checkout</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-      <li><a href="admin.html" class="btn small">Admin</a></li>
-    </ul>
-  </nav>
-
-  <!-- HERO SECTION -->
+  <!-- HERO / BACKGROUND -->
   <header class="hero" style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat;">
     <div class="hero-overlay">
       <div class="hero-content">
-        <h1>About Our MNU Collection</h1>
-        <p>Luxurious, Modern, Unique</p>
+
+        <!-- LOGIN FORM -->
+        <div class="admin-box" id="loginBox">
+          <h2>Admin Login</h2>
+          <input type="text" id="adminUser" placeholder="Username">
+          <input type="password" id="adminPass" placeholder="Password">
+          <button id="loginBtn" class="btn">Login</button>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div class="admin-box" id="dashboard" style="display:none;">
+          <h2>Welcome Admin</h2>
+
+          <!-- ADD PRODUCT -->
+          <div class="add-product">
+            <h3>Add New Product</h3>
+            <input type="text" id="productName" placeholder="Product Name">
+            <input type="number" id="productPrice" placeholder="Price">
+            <textarea id="productDesc" placeholder="Description"></textarea>
+            <input type="file" id="productImage">
+            <button class="btn" id="addProductBtn">Add Product</button>
+          </div>
+
+          <!-- MANAGE PRODUCTS & ORDERS -->
+          <div class="manage">
+            <h3>Manage Products</h3>
+            <div id="productList"></div>
+
+            <h3>Orders</h3>
+            <div id="orderList"></div>
+          </div>
+
+          <button id="logoutBtn" class="btn danger">Logout</button>
+        </div>
+
       </div>
     </div>
   </header>
 
-  <!-- ABOUT CONTENT -->
-  <section class="container about-content">
-    <p>
-      Welcome to MNU Collection! We provide luxurious, modern, and unique products tailored for our customers.
-      Each product is crafted with care and designed to give a premium experience. Our collection includes exclusive
-      items, with quality and style in mind.
-    </p>
-    <p>
-      You can browse our shop, add items to your cart, and purchase easily with our streamlined checkout process.
-      Our admin manages all products and orders efficiently to ensure smooth operations.
-    </p>
-  </section>
+  <script>
+    // ADMIN LOGIN
+    const loginBox = document.getElementById('loginBox');
+    const dashboard = document.getElementById('dashboard');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    loginBtn.addEventListener('click', ()=>{
+      const username = document.getElementById('adminUser').value;
+      const password = document.getElementById('adminPass').value;
+      // Simple check (replace with Supabase or secure auth later)
+      if(username === 'admin' && password === 'admin123'){
+        loginBox.style.display = 'none';
+        dashboard.style.display = 'block';
+      } else {
+        alert('Invalid credentials');
+      }
+    });
+
+    logoutBtn.addEventListener('click', ()=>{
+      dashboard.style.display = 'none';
+      loginBox.style.display = 'block';
+    });
+  </script>
 
 </body>
 </html>
