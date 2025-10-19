@@ -3,52 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - MNU Collection</title>
+    <title>MNU Collection</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') no-repeat center center fixed; background-size: cover;">
 
+    <!-- Header / Navigation -->
     <header class="header">
-        <h1 class="logo">MNU Collection Admin</h1>
+        <h1 class="logo">MNU Collection</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="shop.html" class="nav-link">Shop</a></li>
+                <li><a href="cart.html" class="nav-link">Cart</a></li>
+                <li><a href="checkout.html" class="nav-link">Checkout</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="admin.html" class="nav-link">Admin</a></li>
+            </ul>
+        </nav>
     </header>
 
+    <!-- Main Section with Search Bar -->
     <main>
-        <!-- Login Section -->
-        <section class="admin-login-section" id="loginSection">
-            <h2>Admin Login</h2>
-            <input type="text" id="adminUsername" placeholder="Username">
-            <input type="password" id="adminPassword" placeholder="Password">
-            <button id="loginBtn">Login</button>
-            <p id="loginMessage"></p>
-        </section>
-
-        <!-- Admin Dashboard -->
-        <section class="admin-dashboard" id="dashboardSection" style="display:none;">
-            <h2>Welcome Admin</h2>
-
-            <!-- Add Product -->
-            <div class="add-product">
-                <h3>Add New Product</h3>
-                <input type="text" id="productName" placeholder="Product Name">
-                <input type="number" id="productPrice" placeholder="Price">
-                <textarea id="productDesc" placeholder="Description"></textarea>
-                <input type="file" id="productImage">
-                <button id="addProductBtn">Add Product</button>
+        <section class="home-section">
+            <h2>Welcome to MNU Collection</h2>
+            <div class="search-bar-container">
+                <input type="text" id="searchInput" placeholder="MNU Collection" class="search-bar">
+                <button id="searchBtn">Search</button>
             </div>
-
-            <!-- Manage Products -->
-            <div class="manage-products">
-                <h3>Manage Products</h3>
-                <div id="productsContainer"></div>
-            </div>
-
-            <!-- View Orders -->
-            <div class="view-orders">
-                <h3>Orders</h3>
-                <div id="ordersContainer"></div>
-            </div>
-
-            <button id="logoutBtn">Logout</button>
         </section>
     </main>
 
@@ -59,125 +42,17 @@
     <!-- Scripts -->
     <script type="module" src="supabase.js"></script>
     <script type="module">
-        import { supabase } from './supabase.js';
+        // Search Bar functionality (optional dynamic search can be added later)
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
 
-        const loginSection = document.getElementById('loginSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const loginBtn = document.getElementById('loginBtn');
-        const loginMessage = document.getElementById('loginMessage');
-        const logoutBtn = document.getElementById('logoutBtn');
-
-        const adminUsernameInput = document.getElementById('adminUsername');
-        const adminPasswordInput = document.getElementById('adminPassword');
-
-        const addProductBtn = document.getElementById('addProductBtn');
-        const productNameInput = document.getElementById('productName');
-        const productPriceInput = document.getElementById('productPrice');
-        const productDescInput = document.getElementById('productDesc');
-        const productImageInput = document.getElementById('productImage');
-
-        const productsContainer = document.getElementById('productsContainer');
-        const ordersContainer = document.getElementById('ordersContainer');
-
-        const ADMIN_USER = 'admin';
-        const ADMIN_PASS = 'admin123';
-
-        // Login Function
-        loginBtn.addEventListener('click', () => {
-            const username = adminUsernameInput.value;
-            const password = adminPasswordInput.value;
-
-            if(username === ADMIN_USER && password === ADMIN_PASS) {
-                loginSection.style.display = 'none';
-                dashboardSection.style.display = 'block';
-                loadProducts();
-                loadOrders();
-            } else {
-                loginMessage.textContent = 'Invalid credentials';
+        searchBtn.addEventListener('click', () => {
+            const query = searchInput.value.trim();
+            if(query) {
+                // Redirect to shop page with search query
+                window.location.href = shop.html?search=${encodeURIComponent(query)};
             }
         });
-
-        // Logout Function
-        logoutBtn.addEventListener('click', () => {
-            dashboardSection.style.display = 'none';
-            loginSection.style.display = 'block';
-            adminUsernameInput.value = '';
-            adminPasswordInput.value = '';
-        });
-
-        // Add Product
-        addProductBtn.addEventListener('click', async () => {
-            const file = productImageInput.files[0];
-            if(!file) return alert('Select image');
-            const { data: uploadData, error: uploadError } = await supabase.storage.from('products').upload(public/${file.name}, file);
-            if(uploadError) return console.error(uploadError);
-
-            const imageUrl = https://adxtanejeewibwmsxgae.supabase.co/storage/v1/object/public/products/${file.name};
-
-            const { error } = await supabase.from('products').insert([{
-                name: productNameInput.value,
-                price: parseFloat(productPriceInput.value),
-                description: productDescInput.value,
-                image_url: imageUrl
-            }]);
-            if(error) return console.error(error);
-
-            alert('Product added!');
-            productNameInput.value = '';
-            productPriceInput.value = '';
-            productDescInput.value = '';
-            productImageInput.value = '';
-            loadProducts();
-        });
-
-        // Load Products
-        async function loadProducts() {
-            const { data, error } = await supabase.from('products').select('*');
-            if(error) return console.error(error);
-
-            productsContainer.innerHTML = '';
-            data.forEach(p => {
-                const div = document.createElement('div');
-                div.className = 'product-card';
-                div.innerHTML = `
-                    <img src="${p.image_url}" alt="${p.name}">
-                    <h4>${p.name}</h4>
-                    <p>₹${p.price}</p>
-                    <p>${p.description}</p>
-                    <button onclick="removeProduct(${p.id})">Remove</button>
-                `;
-                productsContainer.appendChild(div);
-            });
-        }
-
-        // Remove Product
-        window.removeProduct = async (id) => {
-            const { error } = await supabase.from('products').delete().eq('id', id);
-            if(error) return console.error(error);
-            alert('Product removed!');
-            loadProducts();
-        }
-
-        // Load Orders
-        async function loadOrders() {
-            const { data, error } = await supabase.from('orders').select('*');
-            if(error) return console.error(error);
-
-            ordersContainer.innerHTML = '';
-            data.forEach(o => {
-                const div = document.createElement('div');
-                div.className = 'order-card';
-                div.innerHTML = `
-                    <p>Order ID: ${o.id}</p>
-                    <p>Name: ${o.name}</p>
-                    <p>Product ID: ${o.product_id || 'Cart Checkout'}</p>
-                    <p>Email: ${o.email}</p>
-                    <p>Phone: ${o.phone}</p>
-                    <p>Address: ${o.street}, ${o.landmark || ''}, ${o.city} - ${o.pincode}</p>
-                `;
-                ordersContainer.appendChild(div);
-            });
-        }
     </script>
 </body>
 </html>
