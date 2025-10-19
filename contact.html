@@ -1,44 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Contact - MNU Collection</title>
-<link rel="stylesheet" href="style.css">
-<style>
-body { background:url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') center/cover no-repeat; color:#fff; font-family:Arial; margin:0; padding:0;}
-nav { display:flex; justify-content:space-between; align-items:center; padding:1rem 2rem; background:rgba(0,0,0,0.7);}
-nav a { color:#fff; text-decoration:none; margin:0 1rem; font-weight:bold;}
-nav a:hover { color:#ffc107;}
-.contact-container { max-width:800px; margin:2rem auto; background:rgba(0,0,0,0.7); padding:2rem; border-radius:25px; animation:fadeInUp 0.5s ease forwards;}
-h2{text-align:center;}
-input,textarea,button{width:100%; margin-bottom:1rem; padding:0.7rem 1rem; border-radius:25px; border:none;}
-button{background:#ffc107; cursor:pointer; transition:0.3s;}
-button:hover{background:#ffdd57; transform:scale(1.05);}
-@keyframes fadeInUp {from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:translateY(0);}}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - MNU Collection</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body style="background: url('https://images.pexels.com/photos/164357/pexels-photo-164357.jpeg') no-repeat center center fixed; background-size: cover;">
 
-<nav>
-  <div class="logo"><a href="index.html">MNU Collection</a></div>
-  <div class="menu">
-    <a href="index.html">Home</a>
-    <a href="shop.html">Shop</a>
-    <a href="about.html">About</a>
-    <a href="contact.html">Contact</a>
-    <a href="cart.html">Cart</a>
-    <a href="admin.html">Admin</a>
-  </div>
-</nav>
+    <!-- Header / Menu -->
+    <header class="header">
+        <h1 class="logo">MNU Collection</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="shop.html" class="nav-link">Shop</a></li>
+                <li><a href="cart.html" class="nav-link">Cart</a></li>
+                <li><a href="checkout.html" class="nav-link">Checkout</a></li>
+                <li><a href="about.html" class="nav-link">About</a></li>
+                <li><a href="contact.html" class="nav-link">Contact</a></li>
+                <li><a href="admin.html" class="nav-link">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
 
-<div class="contact-container">
-  <h2>Contact Us</h2>
-  <input type="text" placeholder="Full Name" required>
-  <input type="email" placeholder="Email" required>
-  <textarea placeholder="Your Message" rows="5" required></textarea>
-  <button>Send Message</button>
-</div>
+    <!-- Contact Form -->
+    <main>
+        <section class="contact-section">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <input type="text" id="name" placeholder="Your Name" required>
+                <input type="email" id="email" placeholder="Your Email" required>
+                <input type="tel" id="phone" placeholder="Phone Number" required>
+                <textarea id="message" placeholder="Your Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+            <div id="contactMessage"></div>
+        </section>
+    </main>
 
+    <footer>
+        <p>&copy; 2025 MNU Collection. All Rights Reserved.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script type="module" src="supabase.js"></script>
+    <script type="module" src="script.js"></script>
+    <script type="module">
+        import { supabase } from './supabase.js';
+
+        const contactForm = document.getElementById('contactForm');
+        const contactMessage = document.getElementById('contactMessage');
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+
+            try {
+                const { error } = await supabase.from('contacts').insert([{ name, email, phone, message }]);
+                if (error) throw error;
+
+                contactMessage.textContent = 'Message sent successfully!';
+                contactForm.reset();
+            } catch (err) {
+                contactMessage.textContent = 'Error sending message: ' + err.message;
+                console.error(err);
+            }
+        });
+    </script>
 </body>
 </html>
