@@ -16,22 +16,21 @@
                 <li><a href="index.html" class="nav-link">Home</a></li>
                 <li><a href="shop.html" class="nav-link">Shop</a></li>
                 <li><a href="cart.html" class="nav-link">Cart</a></li>
+                <li><a href="checkout.html" class="nav-link">Checkout</a></li>
                 <li><a href="about.html" class="nav-link">About</a></li>
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
                 <li><a href="admin.html" class="nav-link">Admin</a></li>
             </ul>
         </nav>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="MNU Collection">
+        </div>
     </header>
 
     <!-- Shop Products -->
     <main>
-        <section class="shop-search">
-            <input type="text" id="searchInputShop" placeholder="Search MNU Collection" class="search-bar">
-            <button onclick="searchProductsShop()">Search</button>
-        </section>
-
-        <section id="shopProductContainer" class="products">
-            <!-- Products loaded dynamically from Supabase -->
+        <section class="shop-section" id="productContainer">
+            <!-- Products will be loaded dynamically here -->
         </section>
     </main>
 
@@ -45,40 +44,43 @@
     <script type="module">
         import { supabase } from './supabase.js';
 
-        const shopProductContainer = document.getElementById('shopProductContainer');
-        const searchInputShop = document.getElementById('searchInputShop');
+        const productContainer = document.getElementById('productContainer');
+        const searchInput = document.getElementById('searchInput');
 
-        async function loadShopProducts() {
-            const { data, error } = await supabase
-                .from('products')
-                .select('*');
-
+        async function loadProducts() {
+            const searchValue = searchInput.value.toLowerCase();
+            const { data, error } = await supabase.from('products').select('*');
             if (error) return console.error(error);
 
-            shopProductContainer.innerHTML = '';
-            data.forEach(product => {
+            productContainer.innerHTML = '';
+            data.filter(p => p.name.toLowerCase().includes(searchValue)).forEach(product => {
                 const div = document.createElement('div');
                 div.className = 'product-card';
                 div.innerHTML = `
                     <img src="${product.image_url}" alt="${product.name}">
                     <h3>${product.name}</h3>
                     <p>₹${product.price}</p>
+                    <p>${product.description}</p>
                     <button onclick="addToCart(${product.id})">Add to Cart</button>
                     <button onclick="buyNow(${product.id})">Buy Now</button>
                 `;
-                shopProductContainer.appendChild(div);
+                productContainer.appendChild(div);
             });
         }
 
-        function searchProductsShop() {
-            const term = searchInputShop.value.toLowerCase();
-            Array.from(shopProductContainer.children).forEach(card => {
-                const name = card.querySelector('h3').textContent.toLowerCase();
-                card.style.display = name.includes(term) ? 'block' : 'none';
-            });
+        async function addToCart(productId) {
+            const { data, error } = await supabase.from('cart').insert([{ product_id: productId }]);
+            if (error) return console.error(error);
+            alert('Product added to cart!');
         }
 
-        document.addEventListener('DOMContentLoaded', loadShopProducts);
+        async function buyNow(productId) {
+            // Redirect to checkout page with productId in query
+            window.location.href = checkout.html?product=${productId};
+        }
+
+        searchInput.addEventListener('input', loadProducts);
+        loadProducts();
     </script>
 </body>
 </html>
