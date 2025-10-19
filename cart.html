@@ -16,6 +16,7 @@
                 <li><a href="index.html" class="nav-link">Home</a></li>
                 <li><a href="shop.html" class="nav-link">Shop</a></li>
                 <li><a href="cart.html" class="nav-link">Cart</a></li>
+                <li><a href="checkout.html" class="nav-link">Checkout</a></li>
                 <li><a href="about.html" class="nav-link">About</a></li>
                 <li><a href="contact.html" class="nav-link">Contact</a></li>
                 <li><a href="admin.html" class="nav-link">Admin</a></li>
@@ -25,9 +26,9 @@
 
     <!-- Cart Section -->
     <main>
-        <h2>Your Cart</h2>
-        <section id="cartContainer" class="cart-products">
-            <!-- Cart items loaded dynamically -->
+        <section class="cart-section" id="cartContainer">
+            <h2>Your Cart</h2>
+            <!-- Cart items will be loaded here -->
         </section>
     </main>
 
@@ -40,41 +41,46 @@
     <script type="module" src="script.js"></script>
     <script type="module">
         import { supabase } from './supabase.js';
+
         const cartContainer = document.getElementById('cartContainer');
 
         async function loadCart() {
-            const { data, error } = await supabase
-                .from('cart')
-                .select(', product:product_id()');
-
+            const { data, error } = await supabase.from('cart').select('id, product_id, products(name, price, description, image_url)');
             if (error) return console.error(error);
 
             cartContainer.innerHTML = '';
+            if (!data.length) {
+                cartContainer.innerHTML = '<p>Your cart is empty.</p>';
+                return;
+            }
+
             data.forEach(item => {
                 const div = document.createElement('div');
                 div.className = 'cart-card';
                 div.innerHTML = `
-                    <img src="${item.product.image_url}" alt="${item.product.name}">
-                    <h3>${item.product.name}</h3>
-                    <p>₹${item.product.price}</p>
+                    <img src="${item.products.image_url}" alt="${item.products.name}">
+                    <h3>${item.products.name}</h3>
+                    <p>₹${item.products.price}</p>
+                    <p>${item.products.description}</p>
                     <button onclick="removeFromCart(${item.id})">Remove</button>
-                    <button onclick="buyNow(${item.product.id})">Buy Now</button>
+                    <button onclick="buyNow(${item.products.id})">Buy Now</button>
                 `;
                 cartContainer.appendChild(div);
             });
         }
 
         async function removeFromCart(cartId) {
-            const { error } = await supabase
-                .from('cart')
-                .delete()
-                .eq('id', cartId);
-
+            const { error } = await supabase.from('cart').delete().eq('id', cartId);
             if (error) return console.error(error);
-            loadCart(); // Refresh cart after removal
+            alert('Product removed from cart!');
+            loadCart();
         }
 
-        document.addEventListener('DOMContentLoaded', loadCart);
+        function buyNow(productId) {
+            window.location.href = checkout.html?product=${productId};
+        }
+
+        loadCart();
     </script>
 </body>
 </html>
